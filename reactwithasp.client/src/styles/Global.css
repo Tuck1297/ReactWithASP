@@ -1,0 +1,22 @@
+body, #root {
+    min-height: 100vh;
+}
+
+footer {
+    bottom: 0;
+    width: 100%;
+}
+
+.page {
+    height: calc(100vh - 150px);
+}
+
+.card {
+    min-width: 300px;
+    min-height: 150px;
+}
+
+#mainNavbar {
+    margin-left: auto;
+    margin-right: 5px;
+}
