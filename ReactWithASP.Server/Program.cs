@@ -1,6 +1,11 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using ReactWithASP.Server.Data;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,13 +14,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAuthorization();
+
 // Add db context
 builder.Services.AddDbContext<DataContext>(options => 
 options.UseNpgsql(builder.Configuration.GetConnectionString("DbString")));
 
-builder.Services.AddAuthorization();
 
-builder.Services.AddIdentityApiEndpoints<Microsoft.AspNetCore.Identity.IdentityUser>()
+builder.Services.AddIdentityApiEndpoints<IdentityUser>()
     .AddEntityFrameworkStores<DataContext>();
 
 var app = builder.Build();
@@ -30,9 +36,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapIdentityApi<IdentityUser>();
+app.UseAuthentication();
 
 app.UseHttpsRedirection();
+
+app.UseAuthorization();
 
 var summaries = new[]
 {
@@ -52,7 +60,30 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast")
+.RequireAuthorization()
 .WithOpenApi();
+
+app.MapGet("/account/user", (ClaimsPrincipal user) =>
+{
+    return Results.Ok($"Welcome {user.Identity.Name}!");
+}).RequireAuthorization();
+
+app.MapGet("/user", () =>
+{
+    return "Hello!";
+});
+
+app.MapGroup("/account").MapIdentityApi<IdentityUser>();
+
+app.MapPost("/account/logout", async (SignInManager<IdentityUser> SignInManager, [FromBody]object empty) =>
+{
+    if (empty is not null)
+    {
+        await SignInManager.SignOutAsync();
+        return Results.Ok();
+    }
+    return Results.NotFound();
+}).RequireAuthorization();
 
 app.MapFallbackToFile("/index.html");
 

@@ -8,28 +8,34 @@ import ForgotPasswordPage from "./components/pages/account/ForgotPassword";
 import ResetPasswordPage from "./components/pages/account/ResetPassword";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import { UserAuthContext } from "./components/UserAuthContext";
+import { useState } from "react";
 
 export default function App() {
+  const [signedIn, setSignedIn] = useState(false);
+  const [sessionInfo, setSessionInfo] = useState(false);
   return (
     <>
-      <Routes>
-        <Route element={<Navbar />}>
-          <Route path="/" element={<HomePage />}></Route>
-          <Route path="/account/login" element={<LoginPage />}></Route>
-          <Route path="/account/register" element={<RegisterPage />}></Route>
-          <Route path="/account/info" element={<InfoPage />}></Route>
-          <Route
-            path="/account/forgotpassword"
-            element={<ForgotPasswordPage />}
-          ></Route>
-          <Route
-            path="/account/resetpassword"
-            element={<ResetPasswordPage />}
-          ></Route>
-          <Route path="*" element={<ErrorPage />}></Route>
-        </Route>
-      </Routes>
-      <Footer />
+      <UserAuthContext.Provider value={{signedIn, setSignedIn, sessionInfo, setSessionInfo}}>
+        <Routes>
+          <Route element={<Navbar />}>
+            <Route path="/" element={<HomePage />}></Route>
+            <Route path="/account/login" element={<LoginPage />}></Route>
+            <Route path="/account/register" element={<RegisterPage />}></Route>
+            <Route path="/account/info" element={<InfoPage />}></Route>
+            <Route
+              path="/account/forgotpassword"
+              element={<ForgotPasswordPage />}
+            ></Route>
+            <Route
+              path="/account/resetpassword"
+              element={<ResetPasswordPage />}
+            ></Route>
+            <Route path="*" element={<ErrorPage />}></Route>
+          </Route>
+        </Routes>
+        <Footer />
+      </UserAuthContext.Provider>
     </>
   );
 }
