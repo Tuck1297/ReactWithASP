@@ -7,15 +7,15 @@ namespace ReactWithASP.Server.Models.InputModels
     {
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
         [Required(ErrorMessage = "First name is required.")]
         [MaxLength(250, ErrorMessage = "First name cannot be longer than 250 characters.")]
-        public string FirstName { get; set; }
+        public required string FirstName { get; set; }
 
         [Required(ErrorMessage = "Last name is required.")]
         [MaxLength(250, ErrorMessage = "Last name cannot be longer than 250 characters.")]
-        public string LastName { get; set; }
+        public required string LastName { get; set; }
 
         [MinLength(8, ErrorMessage = "Password must be at least 8 characters long.")]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!#?]).{8,}$", ErrorMessage = "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character (!, #, ?).")]

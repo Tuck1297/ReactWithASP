@@ -3,12 +3,30 @@ import Row from "../bootstrap/Row";
 import Col from "../bootstrap/Col";
 import CenterElement from "../bootstrap/CenterElement";
 import LargeSpinner from "../loading/LargeSpinner";
+import { userService } from "../../services/userService";
+import { useState } from "react";
 
 const HomePage = () => {
-  async function getWeather() {
-    const result = await fetch("weatherforecast");
-    const data = await result.json();
-    console.log(data);
+  const [token, setToken] = useState("");
+  async function login() {
+    await userService.login('dev@tuckerjohnson.me', "Password1!")
+    .then((result) => {
+      setToken(result);
+      console.log(result);
+    })
+    // let response = await fetch(`auth/login`, {
+    //             method: "POST",
+    //             credentials: "include", //--> send/receive cookies
+    //             body: JSON.stringify({
+    //                 email: "dev@tuckerjohnson.me",
+    //                 passwordhash: "Password1!"
+    //             }),
+    //             headers: {
+    //                 "Content-Type": "application/json",
+    //             },
+    //         });
+    //         console.log(response)
+    // await userService.UpdateJWT()
   }
 
   return (
@@ -19,9 +37,10 @@ const HomePage = () => {
           <CenterElement>
             <Card header="Home Page">
               <p className="text-center">Welcome!</p>
-              <button className="btn btn-secondary" onClick={getWeather}>
-                Get Weather
+              <button className="btn btn-secondary" onClick={login}>
+                Login
               </button>
+              <p>{token}</p>
               <CenterElement>
                 <LargeSpinner />
               </CenterElement>

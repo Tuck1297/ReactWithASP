@@ -12,8 +12,8 @@ using ReactWithASP.Server.Data;
 namespace ReactWithASP.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231127044156_Initial")]
-    partial class Initial
+    [Migration("20231127195757_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -56,7 +56,6 @@ namespace ReactWithASP.Server.Migrations
             modelBuilder.Entity("ReactWithASP.Server.Models.User", b =>
                 {
                     b.Property<Guid>("UserId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Email")
@@ -71,10 +70,6 @@ namespace ReactWithASP.Server.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
@@ -86,21 +81,67 @@ namespace ReactWithASP.Server.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = new Guid("3d9b69ef-b6f8-4df6-bf70-9686bf314822"),
+                            UserId = new Guid("d63f0ca3-e25d-4583-9354-57f110538f45"),
                             Email = "dev@tuckerjohnson.me",
                             FirstName = "Tucker",
                             LastName = "Johnson",
-                            PasswordHash = "$2a$11$7XpJU1Kdb.s2QdyppYRzyOypn7/K/MT0BFM/icN0KWbVqOUauBLtm",
                             Role = "SuperUser"
                         },
                         new
                         {
-                            UserId = new Guid("01c3efa2-3427-410b-9d17-df532fd24e68"),
+                            UserId = new Guid("d63f0ca3-e25d-4583-9354-57f110538a55"),
                             Email = "hashtimemail@gmail.com",
                             FirstName = "Tucker",
                             LastName = "Johnson",
-                            PasswordHash = "$2a$11$90xoxbnjmJQbNBgWmgDBqeJeX8zIE43eiO5gkTSDzV0CcbvNK0pOK",
                             Role = "Admin"
+                        });
+                });
+
+            modelBuilder.Entity("ReactWithASP.Server.Models.UserAccount", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("TokenCreated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("TokenExpires")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("UserAccount");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("d63f0ca3-e25d-4583-9354-57f110538f45"),
+                            Email = "dev@tuckerjohnson.me",
+                            PasswordHash = "$2a$11$xMJRrhZ9T/kxtGk6q2elc.9.8vWbUBFWVNZEbcqQmnVCML7Hm/Vya",
+                            RefreshToken = "r42JbvvoH9UQFuTB3QV3jaqdrStRET3oI2yi2ldmmIQ6QOsrhQmbhbM+ndya1kAgsgYU0Epxf4SzrKKcwOomfw==",
+                            TokenCreated = new DateTime(2023, 11, 27, 19, 57, 56, 818, DateTimeKind.Utc).AddTicks(465),
+                            TokenExpires = new DateTime(2023, 11, 27, 20, 27, 56, 818, DateTimeKind.Utc).AddTicks(458)
+                        },
+                        new
+                        {
+                            UserId = new Guid("d63f0ca3-e25d-4583-9354-57f110538a55"),
+                            Email = "hashtimemail@gmail.com",
+                            PasswordHash = "$2a$11$0ncR2tl1T9VecP4ZWimjo.WptHIwYaohQGKsijE5nRrY27eCkUAp6",
+                            RefreshToken = "bGYfdjWzT4UUmU+Qj7jaJezNkFn6oD5HocvQyzL2o6dgwIYGWhj51HMvr+uWiCrYPECWpULPuKapi4EVhMgEhA==",
+                            TokenCreated = new DateTime(2023, 11, 27, 19, 57, 56, 971, DateTimeKind.Utc).AddTicks(1258),
+                            TokenExpires = new DateTime(2023, 11, 27, 20, 27, 56, 971, DateTimeKind.Utc).AddTicks(1252)
                         });
                 });
 

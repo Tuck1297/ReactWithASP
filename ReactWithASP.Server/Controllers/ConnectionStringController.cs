@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ReactWithASP.Server.Models.InputModels;
 using ReactWithASP.Server.Models;
 using ReactWithASP.Server.Services;
+using System.Security.Claims;
 
 namespace ReactWithASP.Server.Controllers
 {
@@ -27,18 +28,24 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [HttpGet("getAll", Name = "GetAllConnectionStrings")]
-        [Authorize]
+        [Authorize(Policy = "User-Policy")]
+        [Authorize(Policy = "Admin-Policy")]
+        [Authorize(Policy = "SuperUser-Policy")]
         public ActionResult<Guid> GetAll()
         {
             try
             {
-                var userId = _authServices.DecodeUserIdFromToken(this.Request.Headers["Authorization"]);
-                var connectionStrings = _connectionStringsService.GetAllForUser(userId);
+                var userIdClaim = User.FindFirst("ID");
+                if (userIdClaim == null)
+                {
+                    return BadRequest("Invalid or bad request");
+                }
+                var connectionStrings = _connectionStringsService.GetAllForUser(Guid.Parse(userIdClaim.Value));
                 if (connectionStrings != null)
                 {
                     return Json(connectionStrings);
                 }
-                return Json(null);
+                return Json("Empty");
 
             }
             catch (Exception error)
@@ -49,17 +56,21 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [HttpGet("getById/{csId}", Name = "GetConnectionStringById")]
-        [Authorize]
+        [Authorize(Policy = "SuperUser-Policy, Admin-Policy, User-Policy")]
         public ActionResult<Guid> GetById(Guid csId)
         {
             try
             {
-                var userId = _authServices.DecodeUserIdFromToken(this.Request.Headers["Authorization"]);
+                var userIdClaim = User.FindFirst("ID");
+                if (userIdClaim == null)
+                {
+                    return BadRequest("Invalid or bad request");
+                }
                 var connectionString = _connectionStringsService.GetById(csId);
 
                 if (connectionString != null)
                 {
-                    if (connectionString.UserId == userId)
+                    if (connectionString.UserId == Guid.Parse(userIdClaim.Value))
                     {
                         return Json(connectionString);
                     }
@@ -76,16 +87,20 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [HttpPost("create", Name = "CreateConnectionString")]
-        [Authorize]
+        [Authorize(Policy = "SuperUser-Policy, Admin-Policy, User-Policy")]
         public ActionResult CreateCS(ConnectionStringInputModel model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var userId = _authServices.DecodeUserIdFromToken(this.Request.Headers["Authorization"]);
+                    var userIdClaim = User.FindFirst("ID");
+                    if (userIdClaim == null)
+                    {
+                        return BadRequest("Invalid or bad request");
+                    }
                     var mappedModel = _mapper.Map<ConnectionStringInputModel, ConnectionStrings>(model);
-                    mappedModel.UserId = userId;
+                    mappedModel.UserId = Guid.Parse(userIdClaim.Value);
                     var csEntity = _connectionStringsService.Create(mappedModel);
                     if (csEntity != null)
                     {
@@ -102,16 +117,20 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [HttpPut("update", Name = "UpdateConnectionString")]
-        [Authorize]
+        [Authorize(Policy = "SuperUser-Policy, Admin-Policy, User-Policy")]
         public ActionResult UpdateCS(ConnectionStringInputModel model)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var userId = _authServices.DecodeUserIdFromToken(this.Request.Headers["Authorization"]);
+                    var userIdClaim = User.FindFirst("ID");
+                    if (userIdClaim == null)
+                    {
+                        return BadRequest("Invalid or bad request");
+                    }
 
-                    if (userId != model.UserId)
+                    if (Guid.Parse(userIdClaim.Value) != model.UserId)
                     {
                         return BadRequest("Invalid or bad request.");
                     }
@@ -132,16 +151,20 @@ namespace ReactWithASP.Server.Controllers
             }
         }
 
-        [HttpDelete("{id}", Name = "DeleteConnectionString")]
-        [Authorize]
+        [HttpDelete("delete/{id}", Name = "DeleteConnectionString")]
+        [Authorize(Policy = "SuperUser-Policy, Admin-Policy, User-Policy")]
         public ActionResult DeleteCS(Guid id)
         {
             try
             {
-                var userId = _authServices.DecodeUserIdFromToken(this.Request.Headers["Authorization"]);
+                var userIdClaim = User.FindFirst("ID");
+                if (userIdClaim == null)
+                {
+                    return BadRequest("Invalid or bad request");
+                }
                 var csId = _connectionStringsService.GetById(id);
 
-                if (userId != csId.UserId)
+                if (Guid.Parse(userIdClaim.Value) != csId.UserId)
                 {
                     return BadRequest("Invalid or bad request");
                 }

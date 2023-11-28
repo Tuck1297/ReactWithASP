@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ReactWithASP.Server.Data;
 using ReactWithASP.Server.Models;
+using ReactWithASP.Server.Models.InputModels;
 using ReactWithASP.Server.Models.OutputModels;
 using BC = BCrypt.Net.BCrypt;
 
@@ -24,31 +25,33 @@ namespace ReactWithASP.Server.Services
             return mappedModel.ToArray();
         }
 
-        public User Update(Guid id, User model) {
-            var toUpdate = _dataContext.Users.FirstOrDefault(user => user.UserId == id);
+        public UserAccount Update(Guid id, UpdateUserModel model) {
+            var toUpdateUserAccount = _dataContext.UserAccount.FirstOrDefault(user => user.UserId == id);
+            var toUpdateUser = _dataContext.Users.FirstOrDefault(user => user.UserId == id);
 
-            if (toUpdate != null)
+            if (toUpdateUserAccount != null && toUpdateUser != null)
             {
                 if (model.PasswordHash != null)
                 {
-                    toUpdate.PasswordHash = BC.HashPassword(model.PasswordHash);
+                    toUpdateUserAccount.PasswordHash = BC.HashPassword(model.PasswordHash);
                 }
-                toUpdate.FirstName = model.FirstName;
-                toUpdate.LastName = model.LastName;
-                toUpdate.Email = model.Email;
+                toUpdateUserAccount.Email = model.Email.ToLower();
+                toUpdateUser.Email = model.Email.ToLower();
+                toUpdateUser.FirstName = model.FirstName;
+                toUpdateUser.LastName = model.LastName;
                 _dataContext.SaveChanges();
             }
 
-            return toUpdate;
+            return toUpdateUserAccount;
         }
 
-        public bool Delete(Guid id)
+        public bool Delete(UserAccount model)
         {
-            var toDelete = _dataContext.Users.FirstOrDefault(user => user.UserId == id);
-
-            if (toDelete != null)
+            var toDeleteUser = _dataContext.Users.FirstOrDefault(user => user.UserId == model.UserId);
+            if (toDeleteUser != null && model != null)
             {
-                _dataContext.Users.Remove(toDelete);
+                _dataContext.Users.Remove(toDeleteUser);
+                _dataContext.UserAccount.Remove(model);
                 _dataContext.SaveChanges();
                 return true;
             }
@@ -70,6 +73,22 @@ namespace ReactWithASP.Server.Services
             return _dataContext.Users.FirstOrDefault(user => user.Email == email);
         }
 
-        // update role only be able to do this by admin and superuser
+        public bool UpdateRole(string email, string Role)
+        {
+            if (Role != "User" || Role != "Admin" || Role != "SuperUser")
+            {
+                return false;
+            }
+
+            var userToUpdate = _dataContext.Users.FirstOrDefault(user => user.Email == email);
+            if (userToUpdate != null)
+            {
+                userToUpdate.Role = Role;
+                _dataContext.SaveChanges();
+                return true;
+            }
+
+            return false;
+        }
     }
 }

@@ -11,6 +11,8 @@ using Microsoft.OpenApi.Models;
 using ReactWithASP.Server.Helpers;
 using AutoMapper;
 using ReactWithASP.Server.Services;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,10 +21,10 @@ builder.Services.AddControllers(options =>
     options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
 });
 
-
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "Hackathon Application", Version = "v1" });
@@ -51,10 +53,20 @@ builder.Services.AddDbContext<DataContext>(options =>
     }
 });
 
-//builder.Services.AddDbContext<DataContext>(options => 
-//options.UseNpgsql(builder.Configuration.GetConnectionString("DbString")));
 
+builder.Services.AddAuthentication().AddCookie("default", o =>
+{
+    o.Cookie.Name = "Session_Token";
+    //o.Cookie.Domain = "";
+    o.Cookie.Path = "/";
+    o.Cookie.HttpOnly = true;
+    o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    o.Cookie.SameSite = SameSiteMode.Lax;
+    o.ExpireTimeSpan = TimeSpan.FromMinutes(15);
+    o.SlidingExpiration = true;
 
+});
+/*
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -74,11 +86,15 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true
     };
 });
+*/
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(builder =>
+{
+    builder.AddPolicy("Admin-Policy", pb => pb.RequireAuthenticatedUser().RequireClaim(ClaimTypes.Role, "Admin"));
+    builder.AddPolicy("SuperUser-Policy", pb => pb.RequireAuthenticatedUser().RequireClaim(ClaimTypes.Role, "SuperUser"));
+    builder.AddPolicy("User-Policy", pb => pb.RequireAuthenticatedUser().RequireClaim(ClaimTypes.Role, "User"));
 
-//builder.Services.AddIdentityApiEndpoints<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-//    .AddEntityFrameworkStores<DataContext>();
+});
 
 var serviceProvider = builder.Services.BuildServiceProvider();
 var logger = serviceProvider.GetRequiredService<ILogger<ControllerBase>>();
@@ -95,10 +111,12 @@ builder.Services.AddSingleton(mapper);
 
 builder.Services.AddCors(policyBuilder =>
     policyBuilder.AddDefaultPolicy(policy =>
-        policy.WithOrigins("*")
+        policy.SetIsOriginAllowed(host => true)
         .AllowAnyHeader()
-        .AllowAnyHeader())
-);
+        .AllowAnyMethod()
+        .AllowCredentials()
+));
+
 
 // Declared Services
 builder.Services.AddScoped<AuthServices>();
@@ -117,14 +135,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseAuthentication();
+app.UseCors();
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseAuthentication();
 
-app.UseCors();
+app.UseAuthorization();
 
 app.MapControllers();
 
@@ -133,12 +150,12 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", () =>
+app.MapGet("/weather", () =>
 {
     var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+            DateOnly.FromDateTime(DateTime.UtcNow.AddDays(index)),
             Random.Shared.Next(-20, 55),
             summaries[Random.Shared.Next(summaries.Length)]
         ))
@@ -146,30 +163,8 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast")
-//.RequireAuthorization()
-.WithOpenApi();
-
-//app.MapGet("/account/user", (ClaimsPrincipal user) =>
-//{
-//    return Results.Ok($"Welcome {user.Identity.Name}!");
-//}).RequireAuthorization();
-
-//app.MapGet("/user", () =>//
-//{
-//    return "Hello!";
-//});
-
-//app.MapGroup("/account").MapIdentityApi<IdentityUser>();
-
-//app.MapPost("/account/logout", async (SignInManager<IdentityUser> SignInManager, [FromBody]object empty) =>
-//{
-//    if (empty is not null)
-//    {
-//        await SignInManager.SignOutAsync();
-//        return Results.Ok();
-//    }
-//    return Results.NotFound();
-//}).RequireAuthorization();
+.WithOpenApi()
+.RequireAuthorization("Admin-Policy");
 
 app.MapFallbackToFile("/index.html");
 

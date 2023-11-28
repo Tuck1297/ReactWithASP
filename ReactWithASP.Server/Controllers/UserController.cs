@@ -26,10 +26,10 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [HttpGet("getAll", Name = "GetAllUserAccountInfo")]
-        [Authorize(Roles = "SuperUser,Admin")]
+        [Authorize(Policy = "SuperUser-Policy, Admin-Policy")]
         public ActionResult<UserOutputModel[]> GetAll()
         {
-            try 
+            try
             {
                 var users = _userServices.getAllUsers();
                 if (users != null)
@@ -46,13 +46,17 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [HttpGet("getById", Name = "GetUserInfoById")]
-        [Authorize]
+        [Authorize(Policy = "SuperUser-Policy, Admin-Policy, User-Policy")]
         public ActionResult<UserOutputModel> getById()
         {
             try
             {
-                var userId = _authServices.DecodeUserIdFromToken(this.Request.Headers["Authorization"]);
-                var user = _userServices.GetById(userId);
+                var userIdClaim = User.FindFirst("ID");
+                if (userIdClaim == null)
+                {
+                    return BadRequest("Invalid or bad request");
+                }
+                var user = _userServices.GetById(Guid.Parse(userIdClaim.Value));
                 if (user != null)
                 {
                     return Json(user);
@@ -68,20 +72,24 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [HttpPut("update", Name = "UpdateUserInfo")]
-        [Authorize]
+        [Authorize(Policy = "SuperUser-Policy, Admin-Policy, User-Policy")]
         public ActionResult Update(UpdateUserModel model)
         {
             try
             {
-                var userId = _authServices.DecodeUserIdFromToken(this.Request.Headers["Authorization"]);
-                var mappedModel = _mapper.Map<UpdateUserModel, User>(model);
-                var updatedUser = _userServices.Update(userId, mappedModel);
+                var userIdClaim = User.FindFirst("ID");
+                if (userIdClaim == null)
+                {
+                    return BadRequest("Invalid or bad request");
+                }
+                var updatedUser = _userServices.Update(Guid.Parse(userIdClaim.Value), model);
                 if (updatedUser != null)
                 {
+                    // if this is true then need to generate a new jwt and refresh token
                     return Ok("Success!");
                 }
                 return BadRequest("Invalid or bad request");
-             }
+            }
             catch (Exception error)
             {
                 _logger.LogError(error.Message);
@@ -89,8 +97,8 @@ namespace ReactWithASP.Server.Controllers
             }
         }
 
-        [HttpDelete("delete/{email}", Name ="DeleteUserInfo")]
-        [Authorize(Roles = "Admin, SuperUser")]
+        [HttpDelete("delete/{email}", Name = "DeleteUserInfoByEmail")]
+        [Authorize(Policy = "SuperUser-Policy, Admin-Policy")]
         public ActionResult Delete(string email)
         {
             try
@@ -98,7 +106,28 @@ namespace ReactWithASP.Server.Controllers
                 var user = _authServices.GetByEmail(email);
                 if (user != null)
                 {
-                    _userServices.Delete(user.UserId);
+                    _userServices.Delete(user);
+                    return Ok("Success!");
+                }
+                return BadRequest("Invalid or bad request");
+            }
+            catch (Exception error)
+            {
+                _logger.LogError(error.Message);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPut("roleUpdate", Name = "UpdateUserRoleByEmail")]
+        [Authorize(Policy = "SuperUser-Policy, Admin-Policy")]
+        public ActionResult UpdateRole(RoleUpdateModelInput model)
+        {
+            try
+            {
+                var user = _authServices.GetByEmail(model.Email);
+                if (user != null)
+                {
+                    _userServices.UpdateRole(model.Email, model.Role);
                     return Ok("Success!");
                 }
                 return BadRequest("Invalid or bad request");

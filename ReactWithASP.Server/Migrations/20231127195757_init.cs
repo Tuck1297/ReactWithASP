@@ -8,11 +8,27 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ReactWithASP.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "UserAccount",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
+                    RefreshToken = table.Column<string>(type: "text", nullable: false),
+                    TokenExpires = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    TokenCreated = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserAccount", x => x.UserId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
@@ -21,7 +37,6 @@ namespace ReactWithASP.Server.Migrations
                     Email = table.Column<string>(type: "text", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
-                    PasswordHash = table.Column<string>(type: "text", nullable: false),
                     Role = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
@@ -51,12 +66,21 @@ namespace ReactWithASP.Server.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "UserId", "Email", "FirstName", "LastName", "PasswordHash", "Role" },
+                table: "UserAccount",
+                columns: new[] { "UserId", "Email", "PasswordHash", "RefreshToken", "TokenCreated", "TokenExpires" },
                 values: new object[,]
                 {
-                    { new Guid("01c3efa2-3427-410b-9d17-df532fd24e68"), "hashtimemail@gmail.com", "Tucker", "Johnson", "$2a$11$90xoxbnjmJQbNBgWmgDBqeJeX8zIE43eiO5gkTSDzV0CcbvNK0pOK", "Admin" },
-                    { new Guid("3d9b69ef-b6f8-4df6-bf70-9686bf314822"), "dev@tuckerjohnson.me", "Tucker", "Johnson", "$2a$11$7XpJU1Kdb.s2QdyppYRzyOypn7/K/MT0BFM/icN0KWbVqOUauBLtm", "SuperUser" }
+                    { new Guid("d63f0ca3-e25d-4583-9354-57f110538a55"), "hashtimemail@gmail.com", "$2a$11$0ncR2tl1T9VecP4ZWimjo.WptHIwYaohQGKsijE5nRrY27eCkUAp6", "bGYfdjWzT4UUmU+Qj7jaJezNkFn6oD5HocvQyzL2o6dgwIYGWhj51HMvr+uWiCrYPECWpULPuKapi4EVhMgEhA==", new DateTime(2023, 11, 27, 19, 57, 56, 971, DateTimeKind.Utc).AddTicks(1258), new DateTime(2023, 11, 27, 20, 27, 56, 971, DateTimeKind.Utc).AddTicks(1252) },
+                    { new Guid("d63f0ca3-e25d-4583-9354-57f110538f45"), "dev@tuckerjohnson.me", "$2a$11$xMJRrhZ9T/kxtGk6q2elc.9.8vWbUBFWVNZEbcqQmnVCML7Hm/Vya", "r42JbvvoH9UQFuTB3QV3jaqdrStRET3oI2yi2ldmmIQ6QOsrhQmbhbM+ndya1kAgsgYU0Epxf4SzrKKcwOomfw==", new DateTime(2023, 11, 27, 19, 57, 56, 818, DateTimeKind.Utc).AddTicks(465), new DateTime(2023, 11, 27, 20, 27, 56, 818, DateTimeKind.Utc).AddTicks(458) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "UserId", "Email", "FirstName", "LastName", "Role" },
+                values: new object[,]
+                {
+                    { new Guid("d63f0ca3-e25d-4583-9354-57f110538a55"), "hashtimemail@gmail.com", "Tucker", "Johnson", "Admin" },
+                    { new Guid("d63f0ca3-e25d-4583-9354-57f110538f45"), "dev@tuckerjohnson.me", "Tucker", "Johnson", "SuperUser" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -70,6 +94,9 @@ namespace ReactWithASP.Server.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ConnectionStrings");
+
+            migrationBuilder.DropTable(
+                name: "UserAccount");
 
             migrationBuilder.DropTable(
                 name: "Users");

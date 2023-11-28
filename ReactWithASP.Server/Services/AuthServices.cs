@@ -1,9 +1,11 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using ReactWithASP.Server.Data;
 using ReactWithASP.Server.Models;
+using ReactWithASP.Server.Models.InputModels;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection.Emit;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using BC = BCrypt.Net.BCrypt;
 
@@ -48,7 +50,7 @@ namespace ReactWithASP.Server.Services
                             new Claim(JwtRegisteredClaimNames.Jti,
                             Guid.NewGuid().ToString())
                         }),
-                Expires = DateTime.UtcNow.AddMinutes(5),
+                Expires = DateTime.UtcNow.AddMinutes(15),
                 Issuer = issuer,
                 Audience = audience,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
@@ -67,67 +69,85 @@ namespace ReactWithASP.Server.Services
 
         public bool DoesUserExists(string email)
         {
-            var user = _dataContext.Users.FirstOrDefault(x => x.Email == email);
+            var user = _dataContext.UserAccount.FirstOrDefault(x => x.Email.ToLower() == email.ToLower());
             return user != null;
         }
 
-        public User GetById(Guid id)
+        public UserAccount GetById(Guid id)
         {
-            return _dataContext.Users.FirstOrDefault(c => c.UserId == id);
+            return _dataContext.UserAccount.FirstOrDefault(c => c.UserId == id);
         }
 
-        public User GetByEmail(string email)
+        public UserAccount GetByEmail(string email)
         {
-            return _dataContext.Users.FirstOrDefault(c => c.Email == email);
+            return _dataContext.UserAccount.FirstOrDefault(c => c.Email.ToLower() == email.ToLower());
         }
 
-        public User RegisterUser(User model)
+        public UserAccount GetByRefreshToken(string refreshToken)
         {
-            var id = new Guid();
+            return _dataContext.UserAccount.FirstOrDefault(c => c.RefreshToken == refreshToken);
+        }
+
+        public string GetRoleByEmail(string email)
+        {
+            var user = _dataContext.Users.FirstOrDefault(c => c.Email == email);
+            if (user != null)
+            {
+                return user.Role;
+            }
+            return null;
+        }
+
+        public UserAccount RegisterUser(RegisterInputModel model)
+        {
+            var id = Guid.NewGuid();
+
             var existWithId = this.GetById(id);
 
             while (existWithId != null)
             {
-                id = new Guid();
+                id = Guid.NewGuid();
                 existWithId = this.GetById(id);
             }
+            var userAccount = new UserAccount{
+                UserId = id,
+                Email = model.Email.ToLower(),
+                PasswordHash = BC.HashPassword(model.PasswordHash),
+                RefreshToken = GenerateRefreshToken(),
+                TokenCreated = DateTime.UtcNow,
+                TokenExpires = DateTime.UtcNow.AddDays(7)
+            };
 
-            model.UserId = id;
-            model.PasswordHash = BC.HashPassword(model.PasswordHash);
-            var userEntity = _dataContext.Users.Add(model);
+            var user = new User
+            {
+                UserId = id,
+                Email = model.Email.ToLower(),
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Role = "User"
+            };
+
+
+            var userAccountEntity = _dataContext.UserAccount.Add(userAccount);
+            var userEntity = _dataContext.Users.Add(user);
             _dataContext.SaveChanges();
         
-            return userEntity.Entity;
+            return  userAccountEntity.Entity;
         }
 
-        public string DecodeEmailFromToken(string token)
+        public UserAccount UpdateRefreshToken(UserAccount model)
         {
-            var decodedToken = new JwtSecurityTokenHandler();
-            var indexOfTokenValue = 7;
-            var t = decodedToken.ReadJwtToken(token.Substring(indexOfTokenValue));
-
-            return (string)t.Payload.FirstOrDefault(x => x.Key == "email").Value;
-
+            model.RefreshToken = BC.HashPassword(model.RefreshToken);
+            model.TokenCreated = DateTime.UtcNow;
+            model.TokenExpires = DateTime.UtcNow.AddDays(7);
+            _dataContext.SaveChanges();
+            return model;
         }
 
-        public Guid DecodeUserIdFromToken(string token)
+        public string GenerateRefreshToken()
         {
-            var decodedToken = new JwtSecurityTokenHandler();
-            var indexOfTokenValue = 7;
-            var t = decodedToken.ReadJwtToken(token.Substring(indexOfTokenValue));
-
-            var stringId = t.Payload.FirstOrDefault(x => x.Key == "UserId").Value.ToString();
-
-            return Guid.Parse(stringId);
+            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
         }
 
-        public string DecodeRoleFromToken(string token)
-        {
-            var decodedToken = new JwtSecurityTokenHandler();
-            var indexOfTokenValue = 7;
-            var t = decodedToken.ReadJwtToken(token.Substring(indexOfTokenValue));
-
-            return (string)t.Payload.FirstOrDefault(x => x.Key == "Role").Value;
-        }
     }
 }

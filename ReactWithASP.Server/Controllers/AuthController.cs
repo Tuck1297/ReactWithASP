@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ReactWithASP.Server.Models;
 using ReactWithASP.Server.Models.InputModels;
 using ReactWithASP.Server.Services;
+using System.Data;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Claims;
 
 namespace ReactWithASP.Server.Controllers
 {
@@ -29,7 +32,7 @@ namespace ReactWithASP.Server.Controllers
 
         [AllowAnonymous]
         [HttpPost("Register")]
-        public ActionResult<string> Register(RegisterInputModel userModel)
+        public async Task<IActionResult> Register(RegisterInputModel userModel)
         {
             try
             {
@@ -45,14 +48,38 @@ namespace ReactWithASP.Server.Controllers
                         return BadRequest("User already exists!");
                     }
 
-                    var mappedModel = _mapper.Map<RegisterInputModel, User>(userModel);
-                    mappedModel.Role = "User";
-
-                    var user = _authService.RegisterUser(mappedModel);
+                    var user = _authService.RegisterUser(userModel);
                     if (user != null)
                     {
-                        var token = _authService.GenerateJwtToken(user.Email, mappedModel.Role, user.UserId);
-                        return Ok(token);
+                        var cookieOptions = new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Expires = user.TokenExpires,
+                            SameSite = SameSiteMode.None,
+                            Secure = true,
+                            IsEssential = true
+                        };
+
+                        Response.Cookies.Append("refreshToken", user.RefreshToken, cookieOptions);
+
+                        await HttpContext.SignInAsync("default", new ClaimsPrincipal(
+                           new ClaimsIdentity(
+                            new Claim[]
+                             {
+                                new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
+                                new Claim(ClaimTypes.Role, "User"),
+                                new Claim(ClaimTypes.Email, user.Email),
+                                new Claim("ID", user.UserId.ToString())
+                            },
+                                "default"
+                            )
+                            ),
+                            new AuthenticationProperties()
+                            {
+                                IsPersistent = true,
+                            });
+
+                        return Ok("Success!");
                     }
                     return BadRequest("Email or password are not correct!");
                 }
@@ -69,7 +96,7 @@ namespace ReactWithASP.Server.Controllers
 
         [AllowAnonymous]
         [HttpPost("Login")]
-        public ActionResult<string> Login(LoginInputModel userModel)
+        public async Task<IActionResult> Login(LoginInputModel userModel)
         {
             try
             {
@@ -78,9 +105,42 @@ namespace ReactWithASP.Server.Controllers
                     if (_authService.IsAuthenticated(userModel.Email, userModel.PasswordHash))
                     {
                         var user = _authService.GetByEmail(userModel.Email);
-                        var token = _authService.GenerateJwtToken(userModel.Email, user.Role, user.UserId);
+                        var role = _authService.GetRoleByEmail(userModel.Email);
 
-                        return Ok(token);
+                        // If true need to generate a new refresh token -- update user account
+                        if (user.TokenExpires < DateTime.UtcNow)
+                        {
+                            user = _authService.UpdateRefreshToken(user);
+                        }
+
+                        var cookieOptions = new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Expires = user.TokenExpires,
+                            SameSite = SameSiteMode.None,
+                            Secure = true,
+                            IsEssential = true
+                        };
+
+                        Response.Cookies.Append("refreshToken", user.RefreshToken, cookieOptions);
+
+                        await HttpContext.SignInAsync("default", new ClaimsPrincipal(
+                           new ClaimsIdentity(
+                            new Claim[]
+                             {
+                                new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
+                                new Claim(ClaimTypes.Role, role),
+                                new Claim(ClaimTypes.Email, user.Email),
+                                new Claim("ID", user.UserId.ToString())
+                            },
+                                "default"
+                            )
+                        ),
+                            new AuthenticationProperties()
+                            {
+                                IsPersistent = true,
+                            });
+                        return Ok("Successful!");
                     }
 
                     return BadRequest("Email or password are not correct!");
@@ -94,6 +154,89 @@ namespace ReactWithASP.Server.Controllers
                 _logger.LogError(error.Message);
                 return StatusCode(500);
             }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<string>> RefreshToken()
+        {
+            try
+            {
+                var refreshToken = Request.Cookies["refreshToken"];
+                if (refreshToken == null)
+                {
+                    return BadRequest("Token does not exist or has expired.");
+                }
+
+                var accountUser = _authService.GetByRefreshToken(refreshToken);
+
+                if (accountUser == null)
+                {
+                    return BadRequest("Invalid or bad refresh token.");
+                }
+                else if (accountUser.TokenExpires < DateTime.UtcNow)
+                {
+                    return Unauthorized("Token expired. Please log back in.");
+                }
+
+                accountUser = _authService.UpdateRefreshToken(accountUser);
+
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Expires = accountUser.TokenExpires,
+                    SameSite = SameSiteMode.None,
+                    Secure = true,
+                    IsEssential = true
+                };
+                Response.Cookies.Append("refreshToken", accountUser.RefreshToken, cookieOptions);
+
+                var role = _authService.GetRoleByEmail(accountUser.Email);
+
+
+                await HttpContext.SignInAsync("default", new ClaimsPrincipal(
+                           new ClaimsIdentity(
+                            new Claim[]
+                             {
+                                new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
+                                new Claim(ClaimTypes.Role, role),
+                                new Claim(ClaimTypes.Email, accountUser.Email),
+                                new Claim("ID", accountUser.UserId.ToString())
+                            },
+                                "default"
+                            )
+                        ),
+                            new AuthenticationProperties()
+                            {
+                                IsPersistent = true,
+                            });
+
+
+                return Ok("Success!");
+            }
+            catch (Exception error)
+            {
+                _logger.LogError(error.Message);
+                return StatusCode(500);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<ActionResult> SignOutUser()
+        {
+            await HttpContext.SignOutAsync();
+
+            var cookieOptions = new CookieOptions
+            {
+                Secure = true,
+                HttpOnly = true,
+                IsEssential = true
+            };
+
+            Response.Cookies.Delete("refreshToken", cookieOptions);
+
+            return Ok("Successfully Signed Out.");
         }
     }
 }
