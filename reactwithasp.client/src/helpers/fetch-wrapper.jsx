@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import { userService } from "../services/userService";
+import { alertService } from "../services/alertService";
 
 export const fetchWrapper = {
   get: request("GET"),
@@ -10,21 +11,19 @@ export const fetchWrapper = {
 };
 
 function request(method) {
-  return async (url, body, token) => {
+  return async (url, body) => {
+    console.log(url)
     const requestOptions = {
       method,
       headers: {},
       url: url, // Set the URL explicitly in Axios request options.
-      withCredentials: true,
+      withCredentials: false,
+      baseURL: "https://localhost:5173/"
     };
 
     if (body) {
       requestOptions.headers["Content-Type"] = "application/json";
       requestOptions.data = body; // Use 'data' property instead of 'body' in Axios.
-    }
-
-    if (token) {
-        requestOptions.headers["Authorization"] = `Bearer ${token}`
     }
 
     try {
@@ -53,7 +52,7 @@ function authHeader(url) {
 }
 
 async function handleResponse(response) {
-    console.log(response)
+  console.log(response)
   const data = response.data;
   // check for error response
   if (!response.status || response.status < 200 || response.status >= 300) {
@@ -61,10 +60,13 @@ async function handleResponse(response) {
       // auto logout if 401 Unauthorized or 403 Forbidden response returned from API
       userService.logout();
     }
-
     // get error message from data or default to response status text
-    const error = data.message || response.statusText;
+    const error = data || response.statusText;
+    // alertService.error(error, true);
     return Promise.reject(error);
+  }
+  if (JSON.stringify(data).includes("doctype")) {
+    return Promise.reject("User not signed in.")
   }
 
   return data;

@@ -222,7 +222,7 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet]
+        [HttpGet("Logout")]
         public async Task<ActionResult> SignOutUser()
         {
             await HttpContext.SignOutAsync();

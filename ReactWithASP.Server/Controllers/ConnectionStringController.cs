@@ -28,9 +28,7 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [HttpGet("getAll", Name = "GetAllConnectionStrings")]
-        [Authorize(Policy = "User-Policy")]
-        [Authorize(Policy = "Admin-Policy")]
-        [Authorize(Policy = "SuperUser-Policy")]
+        [Authorize]
         public ActionResult<Guid> GetAll()
         {
             try
@@ -56,7 +54,7 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [HttpGet("getById/{csId}", Name = "GetConnectionStringById")]
-        [Authorize(Policy = "SuperUser-Policy, Admin-Policy, User-Policy")]
+        [Authorize]
         public ActionResult<Guid> GetById(Guid csId)
         {
             try
@@ -87,7 +85,7 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [HttpPost("create", Name = "CreateConnectionString")]
-        [Authorize(Policy = "SuperUser-Policy, Admin-Policy, User-Policy")]
+        [Authorize]
         public ActionResult CreateCS(ConnectionStringInputModel model)
         {
             try
@@ -117,7 +115,7 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [HttpPut("update", Name = "UpdateConnectionString")]
-        [Authorize(Policy = "SuperUser-Policy, Admin-Policy, User-Policy")]
+        [Authorize]
         public ActionResult UpdateCS(ConnectionStringInputModel model)
         {
             try
@@ -152,7 +150,7 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [HttpDelete("delete/{id}", Name = "DeleteConnectionString")]
-        [Authorize(Policy = "SuperUser-Policy, Admin-Policy, User-Policy")]
+        [Authorize]
         public ActionResult DeleteCS(Guid id)
         {
             try

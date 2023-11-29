@@ -1,15 +1,17 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReactWithASP.Server.Models;
 using ReactWithASP.Server.Models.InputModels;
 using ReactWithASP.Server.Models.OutputModels;
 using ReactWithASP.Server.Services;
+using System.Security.Claims;
 
 namespace ReactWithASP.Server.Controllers
 {
     [ApiController]
-    [Route("account")]
+    [Route("user")]
     public class UserController : Controller
     {
         private readonly IMapper _mapper;
@@ -26,7 +28,7 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [HttpGet("getAll", Name = "GetAllUserAccountInfo")]
-        [Authorize(Policy = "SuperUser-Policy, Admin-Policy")]
+        [Authorize(Policy = "Admin-Policy")]
         public ActionResult<UserOutputModel[]> GetAll()
         {
             try
@@ -46,7 +48,7 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [HttpGet("getById", Name = "GetUserInfoById")]
-        [Authorize(Policy = "SuperUser-Policy, Admin-Policy, User-Policy")]
+        [Authorize]
         public ActionResult<UserOutputModel> getById()
         {
             try
@@ -72,8 +74,8 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [HttpPut("update", Name = "UpdateUserInfo")]
-        [Authorize(Policy = "SuperUser-Policy, Admin-Policy, User-Policy")]
-        public ActionResult Update(UpdateUserModel model)
+        [Authorize]
+        public async Task<ActionResult> Update(UpdateUserModel model)
         {
             try
             {
@@ -85,7 +87,22 @@ namespace ReactWithASP.Server.Controllers
                 var updatedUser = _userServices.Update(Guid.Parse(userIdClaim.Value), model);
                 if (updatedUser != null)
                 {
-                    // if this is true then need to generate a new jwt and refresh token
+                    await HttpContext.SignInAsync("default", new ClaimsPrincipal(
+                          new ClaimsIdentity(
+                           new Claim[]
+                            {
+                                new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString()),
+                                new Claim(ClaimTypes.Role, "User"),
+                                new Claim(ClaimTypes.Email, updatedUser.Email),
+                                new Claim("ID", updatedUser.UserId.ToString())
+                           },
+                               "default"
+                           )
+                           ),
+                           new AuthenticationProperties()
+                           {
+                               IsPersistent = true,
+                           });
                     return Ok("Success!");
                 }
                 return BadRequest("Invalid or bad request");
@@ -98,7 +115,7 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [HttpDelete("delete/{email}", Name = "DeleteUserInfoByEmail")]
-        [Authorize(Policy = "SuperUser-Policy, Admin-Policy")]
+        [Authorize(Policy = "Admin-Policy")]
         public ActionResult Delete(string email)
         {
             try
@@ -119,16 +136,33 @@ namespace ReactWithASP.Server.Controllers
         }
 
         [HttpPut("roleUpdate", Name = "UpdateUserRoleByEmail")]
-        [Authorize(Policy = "SuperUser-Policy, Admin-Policy")]
+        [Authorize(Policy = "Admin-Policy")]
         public ActionResult UpdateRole(RoleUpdateModelInput model)
         {
             try
             {
+                var userIdClaim = User.FindFirst("ID");
+                if (userIdClaim == null)
+                {
+                    return BadRequest("Invalid or bad request");
+                }
+
                 var user = _authServices.GetByEmail(model.Email);
+
+                // don't let current signed in user to update their own role -- admin signed in must remain admin
+                if (Guid.Parse(userIdClaim.Value) == user.UserId)
+                {
+                    return BadRequest("Admin cannot demote or update themselves.");
+                }
+
                 if (user != null)
                 {
-                    _userServices.UpdateRole(model.Email, model.Role);
-                    return Ok("Success!");
+                    var result = _userServices.UpdateRole(model.Email, model.Role);
+
+                    if (result)
+                    {
+                        return Ok("Success!");
+                    }
                 }
                 return BadRequest("Invalid or bad request");
             }

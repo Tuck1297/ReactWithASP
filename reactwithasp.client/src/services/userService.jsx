@@ -7,21 +7,24 @@ export const userService = {
   getUserInfo,
   register,
   update,
+  refresh,
+  getAllUserInfo,
   delete: _delete,
 };
 
 async function login(email, password) {
-  const {token} = await fetchWrapper.post("auth/login", {
+  return await fetchWrapper.post("auth/login", {
     email: email,
     passwordhash: password,
   });
-  console.log(token)
-
-  return "Signed in successfully!";
 }
 
 async function logout() {
-  // logout logic -- getting rid of tokens and so forth
+  return await fetchWrapper.get("auth/logout");
+}
+
+async function refresh() {
+  return await fetchWrapper.post("auth/refresh-token");
 }
 
 async function UpdateJWT() {
@@ -29,7 +32,11 @@ async function UpdateJWT() {
 }
 
 async function getUserInfo() {
-    return await fetchWrapper.get('account/getbyid');
+  return await fetchWrapper.get("user/getbyid");
+}
+
+async function getAllUserInfo() {
+  return await fetchWrapper.get("user/getall");
 }
 
 async function register(
@@ -46,23 +53,37 @@ async function register(
     passwordhash,
     confirmedpasswordhash,
   });
-  // set tokens here...
 }
 
-async function update(email, firstname, lastname, passwordhash, confirmedpasswordhash) {
-    return fetchWrapper.put('account/update', {email, firstname, lastname, passwordhash, confirmedpasswordhash});
-    // set tokens here...
+async function update(
+  email,
+  firstname,
+  lastname,
+  passwordhash,
+  confirmedpasswordhash
+) {
+  console.log(email, firstname, lastname, passwordhash = null, confirmedpasswordhash = null)
+  if (passwordhash === null) {
+    return fetchWrapper.put("user/update", { email, firstname, lastname });
+  } else {
+    return fetchWrapper.put("user/update", {
+      email,
+      firstname,
+      lastname,
+      passwordhash,
+      confirmedpasswordhash,
+    });
+  }
 }
 
 async function _delete(email) {
-    return fetchWrapper.delete(`account/delete/${email}`);
+  return fetchWrapper.delete(`user/delete/${email}`);
 }
 
 async function roleUpdate(email, role) {
-    return fetchWrapper.put('account/roleupdate', {email, role});
-    // set tokens here...
+  return fetchWrapper.put("user/roleupdate", { email, role });
 }
 
 async function getAllUsers() {
-    return fetchWrapper.get('auth/getall');
+  return fetchWrapper.get("auth/getall");
 }

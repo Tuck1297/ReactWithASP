@@ -6,11 +6,16 @@ import PasswordFormComponent from "./inputs/Password";
 import { yupFormAuth } from "../../helpers/yupFormAuth";
 import SmallSpinner from "../loading/SmallSpinner";
 import { Link } from "react-router-dom";
-
-import { useState } from "react";
+import { userService } from "../../services/userService";
+import { alertService } from "../../services/alertService";
+import { useNavigate } from "react-router-dom";
+import { useState, useContext } from "react";
+import { UserAuthContext } from "../UserAuthContext";
 
 const LoginForm = () => {
     const [loaderState, setLoaderState] = useState(false);
+    const {signedIn, setSignedIn} = useContext(UserAuthContext);
+    const navigate = useNavigate();
 
   const validationSchema = Yup.object().shape(
     yupFormAuth.buildFormSchema({ email: true, password: true })
@@ -23,7 +28,18 @@ const LoginForm = () => {
 
   const onSubmit = async (data) => {
     setLoaderState(true);
-    console.log(data);
+    console.log(data.email, data.password)
+    await userService.login(data.email, data.password)
+    .then((result) => {
+      alertService.success("Successfully signed in!");
+      setSignedIn({loggedIn: true, email: data.email, firstname: null, lastname: null, role: null});
+      navigate("/account/home");
+    })
+    .catch((error) => {
+      console.error(error);
+      alertService.error(error);
+      setLoaderState(false);
+    })
   };
 
   return   <form onSubmit={handleSubmit(onSubmit)}>

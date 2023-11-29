@@ -13,6 +13,7 @@ using AutoMapper;
 using ReactWithASP.Server.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Reflection.Metadata.Ecma335;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,8 +61,8 @@ builder.Services.AddAuthentication().AddCookie("default", o =>
     //o.Cookie.Domain = "";
     o.Cookie.Path = "/";
     o.Cookie.HttpOnly = true;
-    o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    o.Cookie.SameSite = SameSiteMode.Lax;
+    //o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    //o.Cookie.SameSite = SameSiteMode.Lax;
     o.ExpireTimeSpan = TimeSpan.FromMinutes(15);
     o.SlidingExpiration = true;
 
@@ -91,7 +92,6 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization(builder =>
 {
     builder.AddPolicy("Admin-Policy", pb => pb.RequireAuthenticatedUser().RequireClaim(ClaimTypes.Role, "Admin"));
-    builder.AddPolicy("SuperUser-Policy", pb => pb.RequireAuthenticatedUser().RequireClaim(ClaimTypes.Role, "SuperUser"));
     builder.AddPolicy("User-Policy", pb => pb.RequireAuthenticatedUser().RequireClaim(ClaimTypes.Role, "User"));
 
 });
@@ -143,34 +143,27 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.MapControllers();
+//app.MapControllers();
 
-var summaries = new[]
+app.MapControllerRoute(name: "auth", pattern: "/auth/*");
+app.MapControllerRoute(name: "cs", pattern: "/cs/*");
+app.MapControllerRoute(name: "user", pattern: "/user/*");
+
+/*app.Use(async (context, next) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    var url = context.Request.Path.Value;
 
-app.MapGet("/weather", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.UtcNow.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi()
-.RequireAuthorization("Admin-Policy");
+    // Rewrite to index
+    if (url.Contains("/account/login"))
+    {
+        // rewrite and continue processing
+        context.Response.Redirect("https://localhost:5173/account/login");
+        return;
+    }
 
+    await next();
+});
+*/
 app.MapFallbackToFile("/index.html");
 
 app.Run();
-
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

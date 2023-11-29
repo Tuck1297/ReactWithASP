@@ -4,31 +4,12 @@ import Col from "../bootstrap/Col";
 import CenterElement from "../bootstrap/CenterElement";
 import LargeSpinner from "../loading/LargeSpinner";
 import { userService } from "../../services/userService";
-import { useState } from "react";
+import { alertService } from "../../services/alertService";
+import { useState, useContext } from "react";
+import { UserAuthContext } from "../UserAuthContext";
 
 const HomePage = () => {
-  const [token, setToken] = useState("");
-  async function login() {
-    await userService.login('dev@tuckerjohnson.me', "Password1!")
-    .then((result) => {
-      setToken(result);
-      console.log(result);
-    })
-    // let response = await fetch(`auth/login`, {
-    //             method: "POST",
-    //             credentials: "include", //--> send/receive cookies
-    //             body: JSON.stringify({
-    //                 email: "dev@tuckerjohnson.me",
-    //                 passwordhash: "Password1!"
-    //             }),
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //             },
-    //         });
-    //         console.log(response)
-    // await userService.UpdateJWT()
-  }
-
+  const {signedIn, setSignedIn} = useContext(UserAuthContext);
   return (
     <div className="page">
       <Row>
@@ -36,13 +17,9 @@ const HomePage = () => {
         <Col ColNumSize="6">
           <CenterElement>
             <Card header="Home Page">
-              <p className="text-center">Welcome!</p>
-              <button className="btn btn-secondary" onClick={login}>
-                Login
-              </button>
-              <p>{token}</p>
+              <p className="text-center">Welcome! {signedIn.firstname} This is the homepage...</p>
               <CenterElement>
-                <LargeSpinner />
+                {/* <LargeSpinner /> */}
               </CenterElement>
             </Card>
           </CenterElement>

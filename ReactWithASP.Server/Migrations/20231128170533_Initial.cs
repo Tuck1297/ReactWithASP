@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ReactWithASP.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -70,8 +70,8 @@ namespace ReactWithASP.Server.Migrations
                 columns: new[] { "UserId", "Email", "PasswordHash", "RefreshToken", "TokenCreated", "TokenExpires" },
                 values: new object[,]
                 {
-                    { new Guid("d63f0ca3-e25d-4583-9354-57f110538a55"), "hashtimemail@gmail.com", "$2a$11$0ncR2tl1T9VecP4ZWimjo.WptHIwYaohQGKsijE5nRrY27eCkUAp6", "bGYfdjWzT4UUmU+Qj7jaJezNkFn6oD5HocvQyzL2o6dgwIYGWhj51HMvr+uWiCrYPECWpULPuKapi4EVhMgEhA==", new DateTime(2023, 11, 27, 19, 57, 56, 971, DateTimeKind.Utc).AddTicks(1258), new DateTime(2023, 11, 27, 20, 27, 56, 971, DateTimeKind.Utc).AddTicks(1252) },
-                    { new Guid("d63f0ca3-e25d-4583-9354-57f110538f45"), "dev@tuckerjohnson.me", "$2a$11$xMJRrhZ9T/kxtGk6q2elc.9.8vWbUBFWVNZEbcqQmnVCML7Hm/Vya", "r42JbvvoH9UQFuTB3QV3jaqdrStRET3oI2yi2ldmmIQ6QOsrhQmbhbM+ndya1kAgsgYU0Epxf4SzrKKcwOomfw==", new DateTime(2023, 11, 27, 19, 57, 56, 818, DateTimeKind.Utc).AddTicks(465), new DateTime(2023, 11, 27, 20, 27, 56, 818, DateTimeKind.Utc).AddTicks(458) }
+                    { new Guid("d63f0ca3-e25d-4583-9354-57f110538a55"), "hashtimemail@gmail.com", "$2a$11$r8mZQDkgMmVn3/I.oa6mcuZpGuHAvUi7BvrgiV1bIKx750JA0gYGq", "2wIuenT4Dk6lhMukbEb6iBmd4Y+S2n103SNXuxwzh8EKHfHpNMr6r0UIk2+EHXRUb89c+ON+JfgtF/kN+N7UYQ==", new DateTime(2023, 11, 28, 17, 5, 33, 787, DateTimeKind.Utc).AddTicks(6475), new DateTime(2023, 11, 28, 17, 35, 33, 787, DateTimeKind.Utc).AddTicks(6470) },
+                    { new Guid("d63f0ca3-e25d-4583-9354-57f110538f45"), "dev@tuckerjohnson.me", "$2a$11$.uLwuTWjCMnTaXborDtiYO25N4EiBGWXiAER6iT9wjGyzJvFtfPSi", "UdaLvOn1W+GJsTxjQw4auzp+gwb8QCUp8Zmme6FfvMggOkutoLe1GvlKUivBT2aspLzFCGzCEphk9zCmDVaK0g==", new DateTime(2023, 11, 28, 17, 5, 33, 687, DateTimeKind.Utc).AddTicks(7558), new DateTime(2023, 11, 28, 17, 35, 33, 687, DateTimeKind.Utc).AddTicks(7551) }
                 });
 
             migrationBuilder.InsertData(
@@ -80,7 +80,7 @@ namespace ReactWithASP.Server.Migrations
                 values: new object[,]
                 {
                     { new Guid("d63f0ca3-e25d-4583-9354-57f110538a55"), "hashtimemail@gmail.com", "Tucker", "Johnson", "Admin" },
-                    { new Guid("d63f0ca3-e25d-4583-9354-57f110538f45"), "dev@tuckerjohnson.me", "Tucker", "Johnson", "SuperUser" }
+                    { new Guid("d63f0ca3-e25d-4583-9354-57f110538f45"), "dev@tuckerjohnson.me", "Tucker", "Johnson", "Admin" }
                 });
 
             migrationBuilder.CreateIndex(

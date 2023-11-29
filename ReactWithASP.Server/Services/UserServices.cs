@@ -75,15 +75,24 @@ namespace ReactWithASP.Server.Services
 
         public bool UpdateRole(string email, string Role)
         {
-            if (Role != "User" || Role != "Admin" || Role != "SuperUser")
+            var confirmedRole = "";
+            if (string.Equals(Role, "user", StringComparison.OrdinalIgnoreCase))
+            {
+                confirmedRole = "User";
+            }
+            else if (string.Equals(Role, "admin", StringComparison.OrdinalIgnoreCase))
+            {
+                confirmedRole = "Admin";
+            }
+            else
             {
                 return false;
             }
 
-            var userToUpdate = _dataContext.Users.FirstOrDefault(user => user.Email == email);
+            var userToUpdate = _dataContext.Users.FirstOrDefault(user => user.Email.ToLower() == email.ToLower());
             if (userToUpdate != null)
             {
-                userToUpdate.Role = Role;
+                userToUpdate.Role = confirmedRole;
                 _dataContext.SaveChanges();
                 return true;
             }

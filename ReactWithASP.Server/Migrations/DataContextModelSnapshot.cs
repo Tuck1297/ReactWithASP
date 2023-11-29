@@ -82,7 +82,7 @@ namespace ReactWithASP.Server.Migrations
                             Email = "dev@tuckerjohnson.me",
                             FirstName = "Tucker",
                             LastName = "Johnson",
-                            Role = "SuperUser"
+                            Role = "Admin"
                         },
                         new
                         {
@@ -126,19 +126,19 @@ namespace ReactWithASP.Server.Migrations
                         {
                             UserId = new Guid("d63f0ca3-e25d-4583-9354-57f110538f45"),
                             Email = "dev@tuckerjohnson.me",
-                            PasswordHash = "$2a$11$xMJRrhZ9T/kxtGk6q2elc.9.8vWbUBFWVNZEbcqQmnVCML7Hm/Vya",
-                            RefreshToken = "r42JbvvoH9UQFuTB3QV3jaqdrStRET3oI2yi2ldmmIQ6QOsrhQmbhbM+ndya1kAgsgYU0Epxf4SzrKKcwOomfw==",
-                            TokenCreated = new DateTime(2023, 11, 27, 19, 57, 56, 818, DateTimeKind.Utc).AddTicks(465),
-                            TokenExpires = new DateTime(2023, 11, 27, 20, 27, 56, 818, DateTimeKind.Utc).AddTicks(458)
+                            PasswordHash = "$2a$11$.uLwuTWjCMnTaXborDtiYO25N4EiBGWXiAER6iT9wjGyzJvFtfPSi",
+                            RefreshToken = "UdaLvOn1W+GJsTxjQw4auzp+gwb8QCUp8Zmme6FfvMggOkutoLe1GvlKUivBT2aspLzFCGzCEphk9zCmDVaK0g==",
+                            TokenCreated = new DateTime(2023, 11, 28, 17, 5, 33, 687, DateTimeKind.Utc).AddTicks(7558),
+                            TokenExpires = new DateTime(2023, 11, 28, 17, 35, 33, 687, DateTimeKind.Utc).AddTicks(7551)
                         },
                         new
                         {
                             UserId = new Guid("d63f0ca3-e25d-4583-9354-57f110538a55"),
                             Email = "hashtimemail@gmail.com",
-                            PasswordHash = "$2a$11$0ncR2tl1T9VecP4ZWimjo.WptHIwYaohQGKsijE5nRrY27eCkUAp6",
-                            RefreshToken = "bGYfdjWzT4UUmU+Qj7jaJezNkFn6oD5HocvQyzL2o6dgwIYGWhj51HMvr+uWiCrYPECWpULPuKapi4EVhMgEhA==",
-                            TokenCreated = new DateTime(2023, 11, 27, 19, 57, 56, 971, DateTimeKind.Utc).AddTicks(1258),
-                            TokenExpires = new DateTime(2023, 11, 27, 20, 27, 56, 971, DateTimeKind.Utc).AddTicks(1252)
+                            PasswordHash = "$2a$11$r8mZQDkgMmVn3/I.oa6mcuZpGuHAvUi7BvrgiV1bIKx750JA0gYGq",
+                            RefreshToken = "2wIuenT4Dk6lhMukbEb6iBmd4Y+S2n103SNXuxwzh8EKHfHpNMr6r0UIk2+EHXRUb89c+ON+JfgtF/kN+N7UYQ==",
+                            TokenCreated = new DateTime(2023, 11, 28, 17, 5, 33, 787, DateTimeKind.Utc).AddTicks(6475),
+                            TokenExpires = new DateTime(2023, 11, 28, 17, 35, 33, 787, DateTimeKind.Utc).AddTicks(6470)
                         });
                 });
 

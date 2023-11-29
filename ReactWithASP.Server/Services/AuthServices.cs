@@ -137,7 +137,7 @@ namespace ReactWithASP.Server.Services
 
         public UserAccount UpdateRefreshToken(UserAccount model)
         {
-            model.RefreshToken = BC.HashPassword(model.RefreshToken);
+            model.RefreshToken = GenerateRefreshToken();
             model.TokenCreated = DateTime.UtcNow;
             model.TokenExpires = DateTime.UtcNow.AddDays(7);
             _dataContext.SaveChanges();

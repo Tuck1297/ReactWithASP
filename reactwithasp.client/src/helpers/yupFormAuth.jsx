@@ -37,25 +37,33 @@ function buildFormSchema(formObj, currentSchema) {
         (value) =>
           !value || /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)
       )
-      .required("Email is required");
+      .required("Please enter a email address.");
   }
   if (formObj.password) {
     schema.password = Yup.string()
-      .required("Password is required")
-      .min(6, "Password must be at least 6 characters")
+      .required("Please enter a Password")
+      .min(8, "Password must be at least 8 characters")
       .matches(
         /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#$%^&!])[A-Za-z\d@#$%^&!]{6,}$/,
         "Password must contain at least 6 characters, including letters, numbers, and special characters (@, #, $, %, ^, &, !)"
-      );
+      )
+      .matches(/^(?=.*[A-Z])/, 'Must contain at least one uppercase character');
   }
   if (formObj.confirmPassword) {
     schema.confirmPassword = Yup.string()
-      .required("Confirmation of Password is required")
-      .min(6, "Password must be at least 6 characters")
+      .required("Please confirm your password choice")
+      .min(8, "Password must be at least 8 characters")
+      .matches(/^(?=.*[A-Z])/, 'Must contain at least one uppercase character')
       .oneOf([Yup.ref("password"), null], "Passwords must match");
   }
   if (formObj.message) {
     schema.message = Yup.string().required("Message is required");
+  }
+  if (formObj.firstname) {
+    schema.firstname = Yup.string().required("Please enter your first name.")
+  }
+  if (formObj.lastname) {
+    schema.lastname = Yup.string().required("Please enter your last name.")
   }
   if (formObj.code) {
     schema.code = Yup.string().required("Code is required");

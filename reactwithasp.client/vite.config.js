@@ -56,11 +56,11 @@ export default defineConfig({
             }, 
             '^/cs/*': {
                 target,
-                secure: true
+                secure: false
             },
-            '^/account/*': {
+            '^/user/*': {
                 target,
-                secure: true
+                secure: false
             },
         },
         port: 5173,

@@ -43,7 +43,7 @@ namespace ReactWithASP.Server.Data
                 Email = "dev@tuckerjohnson.me",
                 FirstName = "Tucker",
                 LastName = "Johnson",
-                Role = "SuperUser"
+                Role = "Admin"
             });
 
             modelBuilder.Entity<UserAccount>().HasData(new UserAccount

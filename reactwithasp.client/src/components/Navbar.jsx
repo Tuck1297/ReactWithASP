@@ -1,14 +1,36 @@
 import { Outlet } from "react-router-dom";
 import { NavLink } from "react-router-dom";
+import { userService } from "../services/userService";
+import { alertService } from "../services/alertService";
+import { useNavigate } from "react-router-dom";
+import { UserAuthContext } from "./UserAuthContext";
+import { useContext, useEffect, useState } from "react";
 
 const Navbar = () => {
+  const { signedIn, setSignedIn } = useContext(UserAuthContext);
+
+  const navigate = useNavigate();
+
+  async function logout() {
+    await userService
+      .logout()
+      .then((result) => {
+        alertService.success(result);
+        navigate("/");
+        setSignedIn({loggedIn: false, firstname: null, lastname: null, email: null, role: null});
+      })
+      .catch((error) => {
+        alertService.error("Error while logging out.");
+      });
+  }
+
   return (
     <>
       <nav className="navbar navbar-expand-lg bg-light">
         <div className="container-fluid">
-          <a className="navbar-brand" href="/">
+          <NavLink className="navbar-brand" to="/">
             Navbar
-          </a>
+          </NavLink>
           <button
             className="navbar-toggler"
             type="button"
@@ -33,39 +55,55 @@ const Navbar = () => {
                   Home
                 </NavLink>
               </li>
-              <li className="nav-item">
-                <NavLink
-                  style={({ isActive }) => {
-                    return isActive ? { color: "red" } : {};
-                  }}
-                  className="nav-link"
-                  to="/account/login"
-                >
-                  Login
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink
-                  style={({ isActive }) => {
-                    return isActive ? { color: "red" } : {};
-                  }}
-                  className="nav-link"
-                  to="/account/register"
-                >
-                  Register
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink
-                  style={({ isActive }) => {
-                    return isActive ? { color: "red" } : {};
-                  }}
-                  className="nav-link"
-                  to="/account/info"
-                >
-                  Account Information
-                </NavLink>
-              </li>
+              {signedIn.loggedIn ? (
+                <>
+                  {" "}
+                  <li className="nav-item">
+                    <NavLink
+                      style={({ isActive }) => {
+                        return isActive ? { color: "red" } : {};
+                      }}
+                      className="nav-link"
+                      to="/account/home"
+                    >
+                      Profile
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <button
+                      className="nav-link text-center w-100"
+                      onClick={logout}
+                    >
+                      Logout
+                    </button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li className="nav-item">
+                    <NavLink
+                      style={({ isActive }) => {
+                        return isActive ? { color: "red" } : {};
+                      }}
+                      className="nav-link"
+                      to="/account/login"
+                    >
+                      Login
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <NavLink
+                      style={({ isActive }) => {
+                        return isActive ? { color: "red" } : {};
+                      }}
+                      className="nav-link"
+                      to="/account/register"
+                    >
+                      Register
+                    </NavLink>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
         </div>
