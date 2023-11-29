@@ -3,7 +3,6 @@ import { fetchWrapper } from "../helpers/fetch-wrapper";
 export const userService = {
   login,
   logout,
-  UpdateJWT,
   getUserInfo,
   register,
   update,
@@ -20,15 +19,12 @@ async function login(email, password) {
 }
 
 async function logout() {
+  localStorage.clear();
   return await fetchWrapper.get("auth/logout");
 }
 
 async function refresh() {
-  return await fetchWrapper.post("auth/refresh-token");
-}
-
-async function UpdateJWT() {
-  return await fetchWrapper.post("auth/reset-token");
+    return await fetchWrapper.post("auth/refresh-token");
 }
 
 async function getUserInfo() {
@@ -59,10 +55,9 @@ async function update(
   email,
   firstname,
   lastname,
-  passwordhash,
-  confirmedpasswordhash
+  passwordhash = null,
+  confirmedpasswordhash = null
 ) {
-  console.log(email, firstname, lastname, passwordhash = null, confirmedpasswordhash = null)
   if (passwordhash === null) {
     return fetchWrapper.put("user/update", { email, firstname, lastname });
   } else {

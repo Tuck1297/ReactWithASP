@@ -148,6 +148,7 @@ app.UseAuthorization();
 app.MapControllerRoute(name: "auth", pattern: "/auth/*");
 app.MapControllerRoute(name: "cs", pattern: "/cs/*");
 app.MapControllerRoute(name: "user", pattern: "/user/*");
+app.MapControllerRoute(name: "db", pattern: "/db/*");
 
 /*app.Use(async (context, next) =>
 {

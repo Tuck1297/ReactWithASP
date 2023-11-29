@@ -38,10 +38,10 @@ const RegisterForm = () => {
   const onSubmit = async (data) => {
     await userService.register(data.email, data.firstname, data.lastname, data.password, data.confirmPassword)
     .then((result) => {
-      console.log(result);
       setSignedIn({loggedIn: true, firstname: data.firstname, lastname: data.lastname, email: data.email, role: null})
       navigate("/account/home");
       alertService.success("Successfully registered and signed in!", true);
+      localStorage.setItem("last-updated", new Date());
     })
     .catch((error) => {
       setLoaderState(false);

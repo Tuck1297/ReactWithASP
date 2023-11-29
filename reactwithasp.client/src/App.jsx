@@ -23,16 +23,30 @@ export default function App() {
     loggedIn: false,
     email: null,
     firstname: null,
-    lastname: null
+    lastname: null,
   });
 
   async function checkSignedIn() {
+    let storageVal = localStorage.getItem("last-updated");
+    if (storageVal == null) return;
+
+    const cookieDate = new Date(storageVal);
+    const currentDate = new Date();
+    const timeDifference = currentDate - cookieDate;
+    const minutesDifference = timeDifference / (1000 * 60);
+    // if minutesDifference is less then 14 minutes don't need to refresh jwt
+    if (minutesDifference <= 14) {
+      setSignedIn((prev) => ({ ...prev, loggedIn: true }));
+      return;
+    }
+
     if (!signedIn.loggedIn) {
       await userService
         .refresh()
         .then((result) => {
           console.log("Token refreshed.");
           setSignedIn((prev) => ({ ...prev, loggedIn: true }));
+          localStorage.setItem("last-updated", new Date());
         })
         .catch((error) => {
           // alertService.warning("Your session has expired. Please log back in.")
@@ -55,7 +69,7 @@ export default function App() {
             <Route path="/account/login" element={<LoginPage />}></Route>
             <Route path="/account/register" element={<RegisterPage />}></Route>
             <Route path="/account/home" element={<InfoPage />}></Route>
-            <Route path="/account/manage" element={<ManageUsersPage/>}></Route>
+            <Route path="/account/manage" element={<ManageUsersPage />}></Route>
             <Route
               path="/account/forgotpassword"
               element={<ForgotPasswordPage />}

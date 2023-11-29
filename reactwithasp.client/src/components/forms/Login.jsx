@@ -34,6 +34,7 @@ const LoginForm = () => {
       alertService.success("Successfully signed in!");
       setSignedIn({loggedIn: true, email: data.email, firstname: null, lastname: null, role: null});
       navigate("/account/home");
+      localStorage.setItem("last-updated", new Date());
     })
     .catch((error) => {
       console.error(error);
