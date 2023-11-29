@@ -2,6 +2,7 @@
 using ReactWithASP.Server.Data;
 using ReactWithASP.Server.Models;
 using ReactWithASP.Server.Models.InputModels;
+using ReactWithASP.Server.Models.OutputModels;
 
 namespace ReactWithASP.Server.Services
 {
@@ -16,13 +17,13 @@ namespace ReactWithASP.Server.Services
             _mapper = mapper;
         }
 
-        public ConnectionStringInputModel[] GetAllForUser(Guid id)
+        public ConnectionStringOutputModel[] GetAllForUser(Guid id)
         {
             var connectionStrings = _dataContext.ConnectionStrings
             .Where(cs => cs.UserId == id)
             .ToList();
 
-            var mappedModel = _mapper.Map<ConnectionStringInputModel[]>(connectionStrings);
+            var mappedModel = _mapper.Map<ConnectionStringOutputModel[]>(connectionStrings);
 
             return mappedModel.ToArray();
         } 

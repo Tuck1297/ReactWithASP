@@ -42,7 +42,13 @@ const InfoPage = () => {
         .catch(async (error) => {
           console.log(error);
           navigate("/account/login");
-          setSignedIn({loggedIn: false, firstname: null, lastname: null, role: null, email: null})
+          setSignedIn({
+            loggedIn: false,
+            firstname: null,
+            lastname: null,
+            role: null,
+            email: null,
+          });
           // await userService.logout();
           alertService.warning("In order to access this page you must login");
         });
@@ -74,13 +80,24 @@ const InfoPage = () => {
                     )}
                   </div>
                   <CenterElement>
-                  {signedIn.role === "Admin" ? (
-                    <NavLink to="/account/manage" className="btn btn-primary mt-4">
-                      Manage Accounts
-                    </NavLink>
-                  ) : (
-                    ""
-                  )}
+                    {signedIn.role === "Admin" ? (
+                      <>
+                        <NavLink
+                          to="/account/manage"
+                          className="btn btn-primary m-1 mt-4"
+                        >
+                          Manage Accounts
+                        </NavLink>
+                        <NavLink
+                          to="/db/cs-manage"
+                          className="btn btn-primary m-1 mt-4"
+                        >
+                          See Databases
+                        </NavLink>
+                      </>
+                    ) : (
+                      ""
+                    )}
                   </CenterElement>
                 </section>
               </CenterElement>

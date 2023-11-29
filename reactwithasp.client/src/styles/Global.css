@@ -8,7 +8,7 @@ footer {
 }
 
 .page {
-    height: calc(100vh - 150px);
+    height: calc(100vh - 250px);
 }
 
 .card {
@@ -24,3 +24,13 @@ footer {
 tbody tr:nth-child(even) {
     background-color: rgba(0, 0, 0, 0.1);
 }
+
+.table-container {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.data-table {
+    border-collapse: collapse;
+}
+

@@ -25,6 +25,9 @@ namespace ReactWithASP.Server.Helpers
             CreateMap<ConnectionStringInputModel, ConnectionStrings>();
             CreateMap<ConnectionStrings, ConnectionStringInputModel>().ReverseMap();
 
+            CreateMap<ConnectionStringOutputModel, ConnectionStrings>();
+            CreateMap<ConnectionStrings, ConnectionStringOutputModel>().ReverseMap();
+
             CreateMap<UserOutputModel, User>();
             CreateMap<User, UserOutputModel>().ReverseMap();
 

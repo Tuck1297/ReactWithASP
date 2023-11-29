@@ -12,9 +12,18 @@ Currently, two official plugins are available:
 
 Still need pages for the following account api routes
 
-2. Need to restrict account access on specific pages...
-3. create global context that will store and manage logged in state (refresh bearer token will be stored in localstorage)
 4. design a simple homepage that like v0 with their AI
 5. Connect account endpoints
 
 6. If I have time come back to do 2 factor authentication
+
+## For database management and connection
+- need to add form for adding a database connection
+- Path for accessing data
+    -> see all accessible databases
+    -> select a database
+    -> see all database tables
+    -> select a database table
+    -> first need total number of rows in database
+        -> this will inform access to first 50 rows in database
+        -> if there are more than 50 rows then create a manage state that will select and retrieve current index of rows in database (organize by pages) - this will all be managed in the front end so the data will not be stored anywhere...

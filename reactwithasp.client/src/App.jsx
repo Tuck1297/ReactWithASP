@@ -7,6 +7,7 @@ import ErrorPage from "./components/pages/ErrorPage";
 import ForgotPasswordPage from "./components/pages/account/ForgotPassword";
 import ResetPasswordPage from "./components/pages/account/ResetPassword";
 import ManageUsersPage from "./components/pages/account/ManageUsers";
+import DbConnectorManagementPage from "./components/pages/account/DbConnectorManagement";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { UserAuthContext } from "./components/UserAuthContext";
@@ -44,7 +45,7 @@ export default function App() {
       await userService
         .refresh()
         .then((result) => {
-          console.log("Token refreshed.");
+          // console.log("Token refreshed.");
           setSignedIn((prev) => ({ ...prev, loggedIn: true }));
           localStorage.setItem("last-updated", new Date());
         })
@@ -78,6 +79,7 @@ export default function App() {
               path="/account/resetpassword"
               element={<ResetPasswordPage />}
             ></Route>
+            <Route path="/db/cs-manage" element={<DbConnectorManagementPage/>}></Route>
             <Route path="*" element={<ErrorPage />}></Route>
           </Route>
         </Routes>
