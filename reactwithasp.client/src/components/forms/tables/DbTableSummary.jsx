@@ -102,6 +102,7 @@ const Table = ({ data, switchView }) => {
                     <button
                       className="btn btn-primary m-1"
                       onClick={() => {
+                        console.log(row)
                         switchView(row)
                       }}
                     >

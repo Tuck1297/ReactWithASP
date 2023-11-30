@@ -69,18 +69,18 @@ const ConnectionStringManagementPage = () => {
   const [loadedDBs, setLoadedDBs] = useState(null);
   const [loadedTablesFromDB, setLoadedTablesFromDB] = useState(null);
   const [loadedDataFromTable, setLoadedDataFromTable] = useState(null);
+  const [currentDBInteracting, setCurrentDBInteracting] = useState(null);
 
   function switchToTablesView(data) {
-    console.log(data);
     setLoadingState(true);
     setcurrentDataDisplay({ ...currentDataDisplay, db: false });
     setScreenMessage("Loading available tables in selected database.");
+    setCurrentDBInteracting(data.id);
 
     setTimeout(async () => {
       await externalDbService
         .getAllTableNames(data.id)
         .then((result) => {
-          console.log(result);
           setLoadedTablesFromDB(result);
           setScreenMessage(null);
           setcurrentDataDisplay({
@@ -112,16 +112,29 @@ const ConnectionStringManagementPage = () => {
     setcurrentDataDisplay({ ...currentDataDisplay, tables: false });
     setScreenMessage("Loading data for selected database table.");
 
-    // once data is loaded - set laoding state to false, currrentdisplay for table_data to true and screen message to null
-    setTimeout(() => {
-      setLoadedDataFromTable(tableTestData);
-      setScreenMessage(null);
-      setcurrentDataDisplay({
-        ...currentDataDisplay,
-        tables: false,
-        table_data: true,
-      });
-      setLoadingState(false);
+    setTimeout(async () => {
+      await externalDbService
+        .updateTableInteracting(data.tableName, currentDBInteracting)
+        .then((result) => {
+          console.log("table interacting", result);
+          return externalDbService.getDataFromTable(currentDBInteracting, 0, 25);
+        })
+        .then((result) => {
+          setLoadedDataFromTable(result);
+          setScreenMessage(null);
+          setcurrentDataDisplay({
+            ...currentDataDisplay,
+            tables: false,
+            table_data: true,
+          });
+          setLoadingState(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          setScreenMessage(
+            "There was a problem loading this information. Please try again later."
+          );
+        });
     }, 1000);
   }
 

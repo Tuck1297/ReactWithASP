@@ -40,10 +40,10 @@ namespace ReactWithASP.Server.Services
             return cString;
         }
 
-        public ConnectionStringInputModel GetById(Guid id)
+        public ConnectionStrings GetById(Guid id)
         {
             var model = _dataContext.ConnectionStrings.FirstOrDefault(cs => cs.Id == id);
-            var mappedModel = _mapper.Map<ConnectionStringInputModel>(model);
+            var mappedModel = _mapper.Map<ConnectionStrings>(model);
             return mappedModel;
         }
 
@@ -91,6 +91,18 @@ namespace ReactWithASP.Server.Services
                 return true;
             }
 
+            return false;
+        }
+
+        public bool updateTableInteracting(string tableName, Guid csId)
+        {
+            var toUpdate = _dataContext.ConnectionStrings.FirstOrDefault(cs => cs.Id.Equals(csId));
+            if (toUpdate != null)
+            {
+                toUpdate.currentTableInteracting = tableName;
+                _dataContext.SaveChanges();
+                return true;
+            }
             return false;
         }
     }
