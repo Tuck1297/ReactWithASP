@@ -1,4 +1,4 @@
-import ObjectTable from "../../forms/tables/ObjectTable";
+import ObjectTable from "../../forms/tables/DbDataTable";
 import DbConnectionsSummaryTable from "../../forms/tables/DbConnectionsSummaryTable";
 import DbTableSummary from "../../forms/tables/DbTableSummary";
 import LargeSpinner from "../../loading/LargeSpinner";

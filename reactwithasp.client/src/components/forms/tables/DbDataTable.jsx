@@ -28,11 +28,17 @@ const Table = ({ data }) => {
   };
 
   const handleAddRow = () => {
+    if (tableData.length == 0) {
+      setTableData([newRow]);
+      setNewRow({});
+      return;
+    }
     // TODO - connection database add action here
     if (!validateObjectKeys(tableData[0], newRow)) {
       return;
     }
-    setTableData([...tableData, newRow]);
+    
+    setTableData([newRow, ...tableData]);
     setNewRow({});
   };
 
@@ -52,7 +58,6 @@ const Table = ({ data }) => {
         return false;
       }
     }
-
     // All keys are present and values are not null or empty
     return true;
   }

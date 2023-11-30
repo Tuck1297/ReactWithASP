@@ -7,7 +7,7 @@ using ReactWithASP.Server.Services;
 namespace ReactWithASP.Server.Controllers
 {
     [ApiController]
-    [Route("db")]
+    [Route("external")]
     public class DatabaseConnectorController : Controller
     {
         private readonly IMapper _mapper;
@@ -21,12 +21,17 @@ namespace ReactWithASP.Server.Controllers
             _connectionStringsService = connectionStringService;
         }
 
-        [HttpGet("getAllDbTables")]
+        [HttpGet("table/${tableName}")]
         [Authorize]
         public async Task<ActionResult> Get()
         {
             try
-            {
+            {   
+                // retrieve connection string from table name
+                // ensure user accessing has access to table info
+                // decrypt connection string
+                // execute query 
+                // return data
                 string cs = "host=127.0.0.1; database=HackathonDB; port=5420; user id=postgres; password=123456;";
                 using (var dbExecutor = new DbExecutor(cs))
                 {
@@ -41,5 +46,9 @@ namespace ReactWithASP.Server.Controllers
                 return StatusCode(500);
             }
         }
+        // data/${tableName} --> get data from table
+        // data/${rowIdentifier}
+        // data (post) --> create new row
+        // data (put) --> update current row
     }
 }

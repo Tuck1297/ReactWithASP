@@ -38,7 +38,7 @@ namespace ReactWithASP.Server.Controllers
                 {
                     return Json(users);
                 }
-                return Json(null);
+                return Json("Empty");
             }
             catch (Exception error)
             {
@@ -105,7 +105,7 @@ namespace ReactWithASP.Server.Controllers
                            });
                     return Ok("Success!");
                 }
-                return BadRequest("Invalid or bad request");
+                return BadRequest("User to update does not exist.");
             }
             catch (Exception error)
             {
@@ -144,7 +144,7 @@ namespace ReactWithASP.Server.Controllers
                 var userIdClaim = User.FindFirst("ID");
                 if (userIdClaim == null)
                 {
-                    return BadRequest("Invalid or bad request");
+                    return BadRequest("Invalid credentials.");
                 }
 
                 var user = _authServices.GetByEmail(model.Email);

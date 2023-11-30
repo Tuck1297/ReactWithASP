@@ -36,7 +36,7 @@ namespace ReactWithASP.Server.Controllers
                 var userIdClaim = User.FindFirst("ID");
                 if (userIdClaim == null)
                 {
-                    return BadRequest("Invalid or bad request");
+                    return BadRequest("Invalid credentials.");
                 }
                 var connectionStrings = _connectionStringsService.GetAllForUser(Guid.Parse(userIdClaim.Value));
                 if (connectionStrings != null)
@@ -57,6 +57,7 @@ namespace ReactWithASP.Server.Controllers
         [Authorize]
         public ActionResult<Guid> GetById(Guid csId)
         {
+            return BadRequest("Endpoint is disabled");
             try
             {
                 var userIdClaim = User.FindFirst("ID");
@@ -95,14 +96,14 @@ namespace ReactWithASP.Server.Controllers
                     var userIdClaim = User.FindFirst("ID");
                     if (userIdClaim == null)
                     {
-                        return BadRequest("Invalid or bad request");
+                        return BadRequest("Invalid credentials.");
                     }
                     var mappedModel = _mapper.Map<ConnectionStringInputModel, ConnectionStrings>(model);
                     mappedModel.UserId = Guid.Parse(userIdClaim.Value);
                     var csEntity = _connectionStringsService.Create(mappedModel);
                     if (csEntity != null)
                     {
-                        return Ok("Success!");
+                        return Ok("Success! Connection details have been successfully stored.");
                     }
                 }
                 return BadRequest("Invalid or bad request.");
@@ -118,6 +119,7 @@ namespace ReactWithASP.Server.Controllers
         [Authorize]
         public ActionResult UpdateCS(ConnectionStringInputModel model)
         {
+            return BadRequest("Endpoint is disabled");
             try
             {
                 if (ModelState.IsValid)
@@ -160,21 +162,21 @@ namespace ReactWithASP.Server.Controllers
                 {
                     return BadRequest("Invalid or bad request");
                 }
-                var csId = _connectionStringsService.GetById(id);
+                var cs = _connectionStringsService.GetById(id);
 
-                if (Guid.Parse(userIdClaim.Value) != csId.UserId)
+                if (cs == null)
                 {
-                    return BadRequest("Invalid or bad request");
+                    return BadRequest("This data does not exist.");
                 }
 
-                if (csId != null)
+                if (Guid.Parse(userIdClaim.Value) != cs.UserId)
                 {
-                    _connectionStringsService.Delete(id);
-                    return Ok("Success!");
+                    return BadRequest("You are not authorized to delete this data.");
                 }
 
-                return BadRequest("Invalid or bad request.");
-            }
+                _connectionStringsService.Delete(id);
+                return Ok("Success!");
+                            }
             catch (Exception error)
             {
                 _logger.LogError(error.Message);

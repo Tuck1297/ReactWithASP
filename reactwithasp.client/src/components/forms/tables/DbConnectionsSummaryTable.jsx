@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import Modal from "../../Modal";
+import SmallSpinner from "../../loading/SmallSpinner";
+import { dbCSService } from "../../../services/dbCSService";
+import { alertService } from "../../../services/alertService";
 
 const Table = ({ data, switchView }) => {
   const [tableData, setTableData] = useState(data);
   const [modalOpen, setModalOpen] = useState(false);
   const [toDelete, setToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(null);
 
   // TODOs will be sections that will connect with api connection of database.
 
@@ -14,11 +18,26 @@ const Table = ({ data, switchView }) => {
     switchView(tableData[index]);
   };
 
-  const handleDelete = (index) => {
-    // TODO - connect database delete action here
-    const updatedData = [...tableData];
-    updatedData.splice(index, 1);
-    setTableData(updatedData);
+  const handleDelete = async (index) => {
+    // setInterval( async () => {
+      await dbCSService
+      .delete(tableData[index].id)
+      .then((result) => {
+        alertService.success(
+          `Information associated with ${tableData[index].dbName} has been deleted.`
+        );
+        const updatedData = [...tableData];
+        updatedData.splice(index, 1);
+        setTableData(updatedData);
+        setDeleting(null);
+      })
+      .catch((error) => {
+        alertService.error(
+          "Cannot delete connection information at this time."
+        );
+        setDeleting(null);
+      });
+    // }, 5000);
   };
 
   const numberOfNeededCols = Object.keys(data[0]).length + 1;
@@ -38,6 +57,7 @@ const Table = ({ data, switchView }) => {
           handleDelete(toDelete);
           setModalOpen(false);
           setToDelete(null);
+          setDeleting(toDelete);
         }}
       ></Modal>
       <div className="d-flex justify-content-center flex-column">
@@ -49,12 +69,18 @@ const Table = ({ data, switchView }) => {
                   <th
                     key={key}
                     className="text-center pt-3 pb-3"
-                    style={{ textTransform: "capitalize", width: `${percentage}%`, minWidth: "100px" }}
+                    style={{
+                      textTransform: "capitalize",
+                      width: `${percentage}%`,
+                      minWidth: "100px",
+                    }}
                   >
                     {key}
                   </th>
                 ))}
-                <th className="text-center pt-3 pb-3">Actions</th>
+                <th className="text-center pt-3 pb-3">
+                  Database Connection Actions
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -70,7 +96,7 @@ const Table = ({ data, switchView }) => {
                       className="btn btn-primary m-1"
                       onClick={() => accessDatabaseContents(index)}
                     >
-                      Access Database
+                      Access
                     </button>
                     <button
                       className="btn btn-primary m-1"
@@ -78,15 +104,18 @@ const Table = ({ data, switchView }) => {
                         setModalOpen(true);
                         setToDelete(index);
                       }}
+                      disabled={deleting === index}
                     >
-                      Delete Database Connection
+                      {deleting === index ? <SmallSpinner /> : "Delete"}
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <h4 className="text-center w-100">{tableData.length === 0 ? "Nothing to see here..." : ""}</h4>
+          <h4 className="text-center w-100">
+            {tableData.length === 0 ? "Nothing to see here..." : ""}
+          </h4>
         </div>
       </div>
     </>

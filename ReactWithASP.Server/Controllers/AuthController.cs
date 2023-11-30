@@ -79,7 +79,7 @@ namespace ReactWithASP.Server.Controllers
                                 IsPersistent = true,
                             });
 
-                        return Ok("Success!");
+                        return Ok("Success! User account has been registered and you are now signed in.");
                     }
                     return BadRequest("Email or password are not correct!");
                 }
@@ -140,7 +140,7 @@ namespace ReactWithASP.Server.Controllers
                             {
                                 IsPersistent = true,
                             });
-                        return Ok("Successful!");
+                        return Ok("You have successfully logged in.");
                     }
 
                     return BadRequest("Email or password are not correct!");
@@ -212,7 +212,7 @@ namespace ReactWithASP.Server.Controllers
                             });
 
 
-                return Ok("Success!");
+                return Ok("Success! Session token as been updated.");
             }
             catch (Exception error)
             {
@@ -225,18 +225,26 @@ namespace ReactWithASP.Server.Controllers
         [HttpGet("Logout")]
         public async Task<ActionResult> SignOutUser()
         {
-            await HttpContext.SignOutAsync();
-
-            var cookieOptions = new CookieOptions
+            try
             {
-                Secure = true,
-                HttpOnly = true,
-                IsEssential = true
-            };
+                await HttpContext.SignOutAsync();
 
-            Response.Cookies.Delete("refreshToken", cookieOptions);
+                var cookieOptions = new CookieOptions
+                {
+                    Secure = true,
+                    HttpOnly = true,
+                    IsEssential = true
+                };
 
-            return Ok("Successfully Signed Out.");
+                Response.Cookies.Delete("refreshToken", cookieOptions);
+
+                return Ok("Successfully Signed Out.");
+            }
+            catch (Exception error)
+            {
+                _logger.LogError(error.Message);
+                return StatusCode(500);
+            }
         }
     }
 }
