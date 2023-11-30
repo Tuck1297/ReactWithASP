@@ -28,6 +28,18 @@ namespace ReactWithASP.Server.Services
             return mappedModel.ToArray();
         } 
 
+        public ConnectionStrings? GetByDBName(string dbName, Guid userId) 
+        {
+            var cString = _dataContext.ConnectionStrings.FirstOrDefault(cs => cs.UserId == userId && cs.dbName == dbName);
+
+            if (cString == null) 
+            {
+                return null;
+            }
+
+            return cString;
+        }
+
         public ConnectionStringInputModel GetById(Guid id)
         {
             var model = _dataContext.ConnectionStrings.FirstOrDefault(cs => cs.Id == id);

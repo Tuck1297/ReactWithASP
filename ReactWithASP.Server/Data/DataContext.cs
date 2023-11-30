@@ -35,6 +35,10 @@ namespace ReactWithASP.Server.Data
            .HasForeignKey(cs => cs.UserId)
            .OnDelete(DeleteBehavior.Cascade); // Cascade delete if a user is deleted
 
+            modelBuilder.Entity<ConnectionStrings>()
+                .HasIndex(c => c.dbName)
+                .IsUnique();
+
             modelBuilder.Entity<UserAccount>().HasKey(u => new { u.UserId });
 
             modelBuilder.Entity<User>().HasData(new User
@@ -76,7 +80,23 @@ namespace ReactWithASP.Server.Data
                 TokenCreated = DateTime.UtcNow
             });
 
+            modelBuilder.Entity<ConnectionStrings>().HasData(new ConnectionStrings
+            {
+                Id = Guid.NewGuid(),
+                dbName = "HackathonDB",
+                dbType = "Postgres",
+                dbEncryptedConnectionString = "host=127.0.0.1; database=HackathonDB; port=5420; user id=postgres; password=123456;",
+                UserId = Guid.Parse("D63F0CA3-E25D-4583-9354-57F110538F45")
+            });
 
+            modelBuilder.Entity<ConnectionStrings>().HasData(new ConnectionStrings
+            {
+                Id = Guid.NewGuid(),
+                dbName = "ExploreMoreUSA",
+                dbType = "Postgres",
+                dbEncryptedConnectionString = "host=127.0.0.1; database=exploremoreusa; port=5420; user id=postgres; password=123456;",
+                UserId = Guid.Parse("D63F0CA3-E25D-4583-9354-57F110538F45")
+            });
 
             base.OnModelCreating(modelBuilder);
         }

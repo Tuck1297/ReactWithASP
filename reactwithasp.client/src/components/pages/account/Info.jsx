@@ -64,7 +64,7 @@ const InfoPage = () => {
         <Col ColNumSize="3"> </Col>
         <Col ColNumSize="6">
           <CenterElement>
-            <Card header="Profile">
+            <Card header="Profile" className="mt-5">
               <CenterElement>
                 <section>
                   <div>

@@ -12,8 +12,8 @@ using ReactWithASP.Server.Data;
 namespace ReactWithASP.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20231128170533_Initial")]
-    partial class Initial
+    [Migration("20231130060537_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,6 +34,10 @@ namespace ReactWithASP.Server.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("currentTableInteracting")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("dbEncryptedConnectionString")
                         .IsRequired()
                         .HasColumnType("text");
@@ -50,7 +54,30 @@ namespace ReactWithASP.Server.Migrations
 
                     b.HasIndex("UserId");
 
+                    b.HasIndex("dbName")
+                        .IsUnique();
+
                     b.ToTable("ConnectionStrings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("896d1ec4-e5ff-4354-b7da-2c91453ffcc5"),
+                            UserId = new Guid("d63f0ca3-e25d-4583-9354-57f110538f45"),
+                            currentTableInteracting = "",
+                            dbEncryptedConnectionString = "host=127.0.0.1; database=HackathonDB; port=5420; user id=postgres; password=123456;",
+                            dbName = "HackathonDB",
+                            dbType = "Postgres"
+                        },
+                        new
+                        {
+                            Id = new Guid("dc6ab834-d615-4d42-979c-41c7226b5f7a"),
+                            UserId = new Guid("d63f0ca3-e25d-4583-9354-57f110538f45"),
+                            currentTableInteracting = "",
+                            dbEncryptedConnectionString = "host=127.0.0.1; database=exploremoreusa; port=5420; user id=postgres; password=123456;",
+                            dbName = "ExploreMoreUSA",
+                            dbType = "Postgres"
+                        });
                 });
 
             modelBuilder.Entity("ReactWithASP.Server.Models.User", b =>
@@ -129,19 +156,19 @@ namespace ReactWithASP.Server.Migrations
                         {
                             UserId = new Guid("d63f0ca3-e25d-4583-9354-57f110538f45"),
                             Email = "dev@tuckerjohnson.me",
-                            PasswordHash = "$2a$11$.uLwuTWjCMnTaXborDtiYO25N4EiBGWXiAER6iT9wjGyzJvFtfPSi",
-                            RefreshToken = "UdaLvOn1W+GJsTxjQw4auzp+gwb8QCUp8Zmme6FfvMggOkutoLe1GvlKUivBT2aspLzFCGzCEphk9zCmDVaK0g==",
-                            TokenCreated = new DateTime(2023, 11, 28, 17, 5, 33, 687, DateTimeKind.Utc).AddTicks(7558),
-                            TokenExpires = new DateTime(2023, 11, 28, 17, 35, 33, 687, DateTimeKind.Utc).AddTicks(7551)
+                            PasswordHash = "$2a$11$LgI.5ktKRsk0QMu.44A14uvOPtpVQGlD7ZnBlh4Y69iC/qOG6Gdv.",
+                            RefreshToken = "W9SZymTk2DcJ/7wNWMQSWPeqorpj5WKosTDao31WXTWGLw9jfFuJFvmsb/Tn8dGlTuhW5QAb/F7t7lmmMzhIkA==",
+                            TokenCreated = new DateTime(2023, 11, 30, 6, 5, 37, 495, DateTimeKind.Utc).AddTicks(9720),
+                            TokenExpires = new DateTime(2023, 11, 30, 6, 35, 37, 495, DateTimeKind.Utc).AddTicks(9710)
                         },
                         new
                         {
                             UserId = new Guid("d63f0ca3-e25d-4583-9354-57f110538a55"),
                             Email = "hashtimemail@gmail.com",
-                            PasswordHash = "$2a$11$r8mZQDkgMmVn3/I.oa6mcuZpGuHAvUi7BvrgiV1bIKx750JA0gYGq",
-                            RefreshToken = "2wIuenT4Dk6lhMukbEb6iBmd4Y+S2n103SNXuxwzh8EKHfHpNMr6r0UIk2+EHXRUb89c+ON+JfgtF/kN+N7UYQ==",
-                            TokenCreated = new DateTime(2023, 11, 28, 17, 5, 33, 787, DateTimeKind.Utc).AddTicks(6475),
-                            TokenExpires = new DateTime(2023, 11, 28, 17, 35, 33, 787, DateTimeKind.Utc).AddTicks(6470)
+                            PasswordHash = "$2a$11$Zizwdtseq053HXE2d95.suv.eVrKy0kxa6qOmGxsGdHbVUYh.8sGS",
+                            RefreshToken = "mk8ONqTPHcWfq5oXRRWEoZVavZ+Q3vgP2aLy2tIwCX5uHf229sa0or+t6N2MXzlQLCwVX0cNYVRHwWGoSDeNbA==",
+                            TokenCreated = new DateTime(2023, 11, 30, 6, 5, 37, 596, DateTimeKind.Utc).AddTicks(9399),
+                            TokenExpires = new DateTime(2023, 11, 30, 6, 35, 37, 596, DateTimeKind.Utc).AddTicks(9393)
                         });
                 });
 

@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ReactWithASP.Server.Helpers;
 using ReactWithASP.Server.Services;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace ReactWithASP.Server.Controllers
 {
@@ -21,34 +23,138 @@ namespace ReactWithASP.Server.Controllers
             _connectionStringsService = connectionStringService;
         }
 
-        [HttpGet("table/${tableName}")]
+        [HttpGet("table/{dbId}", Name = "Get All Table Names")]
         [Authorize]
-        public async Task<ActionResult> Get()
+        public async Task<ActionResult> GetTables(Guid dbId)
         {
             try
-            {   
-                // retrieve connection string from table name
-                // ensure user accessing has access to table info
+            {
+                var userIdClaim = User.FindFirst("ID");
+                if (userIdClaim == null)
+                {
+                    return BadRequest("Invalid credentials.");
+                }
+
+                var dbConnectData = _connectionStringsService.GetById(dbId);
+
+                if (dbConnectData == null)
+                {
+                    return NotFound();
+                }
+
+                if (Guid.Parse(userIdClaim.Value) != dbConnectData.UserId)
+                {
+                    return BadRequest("Invalid credentials");
+                }
                 // decrypt connection string
+                
                 // execute query 
                 // return data
-                string cs = "host=127.0.0.1; database=HackathonDB; port=5420; user id=postgres; password=123456;";
+                string cs = dbConnectData.dbEncryptedConnectionString.ToString();
                 using (var dbExecutor = new DbExecutor(cs))
                 {
-                   var result = await dbExecutor.ExecuteQuery<string>(
-                        "SELECT table_name\r\nFROM information_schema.tables\r\nWHERE table_type = 'BASE TABLE' AND table_schema = 'public';");
-                    return Json(result);
+                   var result = await dbExecutor.ExecuteQuery<(string, long)>(
+                        "SELECT table_name,(SELECT reltuples::bigint FROM pg_class WHERE relname = table_name) AS rows_in_table FROM information_schema.tables WHERE table_type = 'BASE TABLE' AND table_schema = 'public';\r\n");
+                    if (result != null)
+                    {
+                        var resultArray = result.Select(t => new
+                        {
+                            TableName = t.Item1,
+                            RowsInTable = t.Item2
+                        }).ToArray();
+                        return Json(resultArray);
+                    }
+                    return NotFound();
                 }
             }
             catch (Exception error) 
             {
                 _logger.LogError(error.Message);
+                return BadRequest(error.Message);
+            }
+        }
+
+        // delete a particular table in selected database
+
+        // data/${tableName} --> get data from table // extend with ? variables... to get rows through like 2 - 4 and so forth...
+        [HttpGet("data/{tableName}", Name = "Get Rows of data from selected database table")]
+        [Authorize]
+        public async Task<ActionResult> GetTableData(string tableName)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("ID");
+                if (userIdClaim == null)
+                {
+                    return BadRequest("Invalid credentials.");
+                }
+                return Json(tableName);
+            }
+            catch(Exception error)
+            {
+                _logger.LogError(error.Message);
                 return StatusCode(500);
             }
         }
-        // data/${tableName} --> get data from table
-        // data/${rowIdentifier}
-        // data (post) --> create new row
-        // data (put) --> update current row
+
+        [HttpDelete("data/{rowIdentifier}", Name = "Delete row or rows based on a particular identifier that is injested from front end.")]
+        [Authorize]
+        public async Task<ActionResult> DeleteRowsBasedOnIdentifier(string rowIdentifier)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("ID");
+                if (userIdClaim == null)
+                {
+                    return BadRequest("Invalid credentials.");
+                }
+                return Json(rowIdentifier);
+            }
+            catch (Exception error)
+            {
+                _logger.LogError(error.Message);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPost("data/add", Name = "Create a new row in the database.")]
+        [Authorize]
+        public async Task<ActionResult> CreateTableRow(JSObject newData)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("ID");
+                if (userIdClaim == null)
+                {
+                    return BadRequest("Invalid credentials.");
+                }
+                return Json(newData);
+            }
+            catch (Exception error)
+            {
+                _logger.LogError(error.Message);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPut("data/update", Name = "Updates a current row in the database.")]
+        [Authorize]
+        public async Task<ActionResult> UpdateTableData(JSObject packagedData)
+        {
+            try
+            {
+                var userIdClaim = User.FindFirst("ID");
+                if (userIdClaim == null)
+                {
+                    return BadRequest("Invalid credentials.");
+                }
+                return Json(packagedData);
+            }
+            catch (Exception error)
+            {
+                _logger.LogError(error.Message);
+                return StatusCode(500);
+            }
+        }
     }
 }

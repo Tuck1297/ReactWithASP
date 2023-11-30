@@ -1,19 +1,11 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using ReactWithASP.Server.Data;
 using System.Security.Claims;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using ReactWithASP.Server.Helpers;
 using AutoMapper;
 using ReactWithASP.Server.Services;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Reflection.Metadata.Ecma335;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -148,7 +140,7 @@ app.UseAuthorization();
 app.MapControllerRoute(name: "auth", pattern: "/auth/*");
 app.MapControllerRoute(name: "cs", pattern: "/cs/*");
 app.MapControllerRoute(name: "user", pattern: "/user/*");
-app.MapControllerRoute(name: "db", pattern: "/db/*");
+app.MapControllerRoute(name: "external", pattern: "/external/*");
 
 /*app.Use(async (context, next) =>
 {

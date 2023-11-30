@@ -10,8 +10,6 @@ const Table = ({ data }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [toDelete, setToDelete] = useState(null);
 
-// TODOs will be sections that will connect with api connection of database.
-
   const handleUpdate = (index) => {
     // TODO - Connect database update action here
     const updatedData = [...tableData];

@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { UserAuthContext } from "../../UserAuthContext";
 import CenterElement from "../../bootstrap/CenterElement";
 import { dbCSService } from "../../../services/dbCSService";
+import { externalDbService } from "../../../services/externalDbService";
 
 /* TODOS:
     Create back button to go t previous view
@@ -75,13 +76,34 @@ const ConnectionStringManagementPage = () => {
     setcurrentDataDisplay({ ...currentDataDisplay, db: false });
     setScreenMessage("Loading available tables in selected database.");
 
-    // once data is loaded - set loading state to false, currentdisplay for tables to true and screen message to null
-    setTimeout(() => {
-      setLoadedTablesFromDB(tableSummary);
-      setScreenMessage(null);
-      setcurrentDataDisplay({ ...currentDataDisplay, tables: true, db: false });
-      setLoadingState(false);
+    setTimeout(async () => {
+      await externalDbService
+        .getAllTableNames(data.id)
+        .then((result) => {
+          console.log(result);
+          setLoadedTablesFromDB(result);
+          setScreenMessage(null);
+          setcurrentDataDisplay({
+            ...currentDataDisplay,
+            tables: true,
+            db: false,
+          });
+          setLoadingState(false);
+        })
+        .catch((error) => {
+          setScreenMessage(
+            "There was a problem loading this information. Please try again later."
+          );
+        });
     }, 1000);
+
+    // once data is loaded - set loading state to false, currentdisplay for tables to true and screen message to null
+    // setTimeout(() => {
+    //   setLoadedTablesFromDB(tableSummary);
+    //   setScreenMessage(null);
+    //   setcurrentDataDisplay({ ...currentDataDisplay, tables: true, db: false });
+    //   setLoadingState(false);
+    // }, 1000);
   }
 
   function switchToTableDataView(data) {
@@ -113,7 +135,9 @@ const ConnectionStringManagementPage = () => {
           setScreenMessage(null);
         })
         .catch(() => {
-          setDisplayError(true);
+          setScreenMessage(
+            "There was a problem loading this information. Please try again later."
+          );
         });
     }, 1000);
   }
