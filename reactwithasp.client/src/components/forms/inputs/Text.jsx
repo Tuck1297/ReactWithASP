@@ -8,7 +8,7 @@ const GeneralTextFormComponent = ({ register, errors, disable, title, registerNa
           type="text"
           {...register(registerName)}
           className={`form-control ${errors[registerName] ? "is-invalid" : ""}`}
-          id="registerTextGeneral"
+          id={`register${registerName}`}
           disabled={disable}
         />
         <div className="invalid-feedback">{errors[registerName]?.message}</div>

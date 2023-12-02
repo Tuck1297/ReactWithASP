@@ -25,7 +25,6 @@ const ConnectionStringForm = () => {
       dbName: true,
       port: true,
       dbUserId: true,
-      dbSchema: true,
     })
   );
 
@@ -36,7 +35,16 @@ const ConnectionStringForm = () => {
 
   const onSubmit = async (data) => {
     setLoaderState(true);
-    console.log(data);
+    dbCSService
+      .saveDBConnection(data)
+      .then((result) => {
+        alertService.success("Database Connection Saved!");
+        setLoaderState(false);
+      })
+      .catch((error) => {
+        alertService.error(error);
+        setLoaderState(false);
+      });
   };
 
   return (
@@ -92,13 +100,6 @@ const ConnectionStringForm = () => {
               disable={loaderState}
               title="Database User Id"
               registerName="dbUserId"
-            />
-            <GeneralTextFormComponent
-              errors={errors}
-              register={register}
-              disable={loaderState}
-              title="Database Schema"
-              registerName="dbSchema"
             />
           </Col>
           <Col ColNumSize="12">

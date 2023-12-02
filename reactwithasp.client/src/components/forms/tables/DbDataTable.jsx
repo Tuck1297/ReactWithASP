@@ -109,6 +109,17 @@ const Table = ({ data, currentDBInteracting }) => {
     return true;
   }
 
+  if (!tableData) {
+    return;
+  }
+  if (tableData.length === 0) {
+    return (
+      <>
+        <h4 className="text-center w-100 mt-5">Nothing to see here...</h4>
+      </>
+    );
+  }
+
   const handleUpdateToEdit = (index) => {
     setEditRow(index);
     setEditRowData(tableData[index]);
@@ -117,14 +128,6 @@ const Table = ({ data, currentDBInteracting }) => {
   let percentage = 100 / numberOfNeededCols;
   if (numberOfNeededCols > 8) {
     percentage = 0;
-  }
-
-  if (tableData.length === 0) {
-    return (
-      <>
-        <h4 className="text-center w-100 mt-5">Nothing to see here...</h4>
-      </>
-    );
   }
 
   return (

@@ -12,7 +12,6 @@ import { dbCSService } from "../../../services/dbCSService";
 import { externalDbService } from "../../../services/externalDbService";
 
 /* TODOS:
-    Create back button to go t previous view
     Create a reset button that will essentially refresh the page, dump all data and restart
 */
 
@@ -96,7 +95,8 @@ const ConnectionStringManagementPage = () => {
     }, 1000);
   }
 
-  async function getDbConnectorNames() {
+  function getDbConnectorNames() {
+    setScreenMessage("Loading Database Connections...");
     setTimeout(async () => {
       await dbCSService
         .getDBNames()
@@ -104,6 +104,7 @@ const ConnectionStringManagementPage = () => {
           setLoadedDBs(result);
           setLoadingState(false);
           setScreenMessage(null);
+          setcurrentDataDisplay({...currentDataDisplay, db: true});
         })
         .catch(() => {
           setScreenMessage(
@@ -122,7 +123,7 @@ const ConnectionStringManagementPage = () => {
       setLoadingState(true);
       setcurrentDataDisplay({ ...currentDataDisplay, tables: false });
       setScreenMessage("Loading saved database connections.");
-      // once data is loaded - set laoding state to false, currrentdisplay for table_data to true and screen message to null
+      // once data is loaded - set loading state to false, currrentdisplay for table_data to true and screen message to null
       setTimeout(() => {
         setScreenMessage(null);
         setcurrentDataDisplay({
@@ -153,6 +154,23 @@ const ConnectionStringManagementPage = () => {
     }
   }
 
+  function resetView() {
+    setLoadedTablesFromDB(null);
+    setLoadedDataFromTable(null);
+    setCurrentDBInteracting(null);
+    setLoadedDBs(null);
+    setScreenMessage("Restarting and grabbing some Mt. Dew...");
+    setLoadingState(true);
+    setcurrentDataDisplay({
+      db: false,
+      tables: false,
+      table_data: false,
+    });
+    setTimeout(() => {
+      getDbConnectorNames();
+    }, 2000);
+  }
+
   useEffect(() => {
     getDbConnectorNames();
   }, []);
@@ -166,12 +184,18 @@ const ConnectionStringManagementPage = () => {
           </CenterElement>
         ) : (
           <>
-            <CenterElement>
+            <CenterElement className="flex-row">
               <button
                 onClick={backBasedOnState}
                 className="btn btn-secondary mt-2"
               >
                 Back
+              </button>
+              <button
+                onClick={resetView}
+                className="btn btn-secondary mt-2"
+              >
+                Reset
               </button>
             </CenterElement>
             {currentDataDisplay.db ? (

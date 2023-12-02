@@ -46,8 +46,6 @@ const LoginForm = () => {
   return   <form onSubmit={handleSubmit(onSubmit)}>
     <EmailFormComponent register={register} errors={errors}/>
     <PasswordFormComponent register={register} errors={errors}/>
-    <Link to="/account/forgotpassword">Forgot Password</Link>
-    {/* TODO: need to add forgot password link here */}
     <button
             type="submit"
             className="btn btn-primary mt-2 w-100"

@@ -34,6 +34,9 @@ const Table = ({ data, switchView, currentDBInteracting }) => {
     }, 1000);
   };
 
+  if (!tableData) {
+    return;
+  }
   if (tableData.length === 0) {
     return (
       <>
@@ -95,7 +98,7 @@ const Table = ({ data, switchView, currentDBInteracting }) => {
               {tableData.map((row, index) => (
                 <tr key={index}>
                   <td className="text-center">{row.tableName}</td>
-                  <td className="text-center">{row.rowsInTable}</td>
+                  <td className="text-center">{row.rowsInTable <= -1 ? 0 : row.rowsInTable}</td>
                   <td className="text-center">
                     <button
                       className="btn btn-primary m-1"
