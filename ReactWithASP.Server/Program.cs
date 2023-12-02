@@ -37,12 +37,30 @@ builder.Services.AddSwaggerGen(option =>
 // Add db context
 
 var dbConnection = builder.Configuration.GetConnectionString("DbString");
+var dbConnection2 = builder.Configuration.GetConnectionString("SupplyChainConnection");
+var dbConnection3 = builder.Configuration.GetConnectionString("WebsiteInfoConnection");
 
 builder.Services.AddDbContext<DataContext>(options =>
 {
     if (dbConnection != null)
     {
         options.UseNpgsql(dbConnection);
+    }
+});
+
+builder.Services.AddDbContext<SupplyChainContext>(options =>
+{
+    if (dbConnection != null)
+    {
+        options.UseNpgsql(dbConnection2);
+    }
+});
+
+builder.Services.AddDbContext<WebsiteContext>(options =>
+{
+    if (dbConnection != null)
+    {
+        options.UseNpgsql(dbConnection3);
     }
 });
 

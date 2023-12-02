@@ -1,43 +1,91 @@
 import React, { useState } from "react";
 import Modal from "../../Modal";
 import { alertService } from "../../../services/alertService";
+import { externalDbService } from "../../../services/externalDbService";
+import SmallSpinner from "../../loading/SmallSpinner";
 
-const Table = ({ data }) => {
+const Table = ({ data, currentDBInteracting }) => {
   const [tableData, setTableData] = useState(data);
   const [newRow, setNewRow] = useState({});
   const [editRow, setEditRow] = useState(null);
   const [editRowData, setEditRowData] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [toDelete, setToDelete] = useState(null);
+  const [addLoading, setAddLoading] = useState(null);
+  const [updateLoading, setUpdateLoading] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(null);
 
   const handleUpdate = (index) => {
-    // TODO - Connect database update action here
-    const updatedData = [...tableData];
-    updatedData[index] = { ...updatedData[index], ...editRowData };
-    setTableData(updatedData);
-    setEditRow(null);
+    const oldRowData = tableData[index];
+    const newRowData = editRowData;
+    setUpdateLoading(true);
+    setTimeout(async () => {
+      await externalDbService
+        .updateRow(currentDBInteracting, oldRowData, newRowData)
+        .then((result) => {
+          alertService.success("Row updated successfully.");
+          const updatedData = [...tableData];
+          updatedData[index] = { ...updatedData[index], ...editRowData };
+          setTableData(updatedData);
+          setEditRow(null);
+          setUpdateLoading(false);
+        })
+        .catch((error) => {
+          alertService.error(error);
+          setUpdateLoading(false);
+        });
+    }, 1000);
   };
 
   const handleDelete = (index) => {
-    // TODO - connect database delete action here
-    const updatedData = [...tableData];
-    updatedData.splice(index, 1);
-    setTableData(updatedData);
+    const deleteParams = tableData[index];
+    setDeleteLoading(true);
+    console.log(index, toDelete, deleteLoading)
+
+    setTimeout(async () => {
+      await externalDbService
+        .deleteRow(currentDBInteracting, deleteParams)
+        .then((result) => {
+          alertService.success("Row deleted successfully.");
+          const updatedData = [...tableData];
+          updatedData.splice(index, 1);
+          setTableData(updatedData);
+          setDeleteLoading(false);
+          setToDelete(null);
+        })
+        .catch((error) => {
+          alertService.error(error);
+          setDeleteLoading(false);
+        });
+    }, 1000);
   };
 
   const handleAddRow = () => {
-    if (tableData.length == 0) {
-      setTableData([newRow]);
-      setNewRow({});
-      return;
-    }
-    // TODO - connection database add action here
     if (!validateObjectKeys(tableData[0], newRow)) {
       return;
     }
-    
-    setTableData([newRow, ...tableData]);
-    setNewRow({});
+    const newRowData = newRow;
+    setAddLoading(true);
+    setTimeout(async () => {
+      await externalDbService
+        .createRow(currentDBInteracting, newRowData)
+        .then((result) => {
+          alertService.success("Row added successfully!");
+          if (tableData.length == 0) {
+            setTableData([newRow]);
+            setNewRow({});
+            return;
+          }
+          setTableData([newRow, ...tableData]);
+          setNewRow({});
+          setAddLoading(false);
+        })
+        .catch((error) => {
+          console.error(error)
+          alertService.error(error);
+          setAddLoading(false);
+        });
+    }, 1000);
   };
 
   function validateObjectKeys(sourceObject, targetObject) {
@@ -45,14 +93,14 @@ const Table = ({ data }) => {
     for (const key of Object.keys(sourceObject)) {
       // Check if the key is present in the targetObject
       if (!(key in targetObject)) {
-        alertService.warning(`New column "${key}" is empty.`)
+        alertService.warning(`New column "${key}" is empty.`);
         return false;
       }
 
       // Check if the corresponding value is not null or an empty string
       const targetValue = targetObject[key].trim();
       if (targetValue === null || targetValue === "") {
-        alertService.warning(`New column "${key}" is empty.`)
+        alertService.warning(`New column "${key}" is empty.`);
         return false;
       }
     }
@@ -62,7 +110,7 @@ const Table = ({ data }) => {
 
   const handleUpdateToEdit = (index) => {
     setEditRow(index);
-    setEditRowData(data[index]);
+    setEditRowData(tableData[index]);
   };
   const numberOfNeededCols = Object.keys(data[0]).length + 1;
   let percentage = 100 / numberOfNeededCols;
@@ -80,7 +128,6 @@ const Table = ({ data }) => {
         btnAction={() => {
           handleDelete(toDelete);
           setModalOpen(false);
-          setToDelete(null);
         }}
       ></Modal>
       <div className="d-flex justify-content-center flex-column">
@@ -92,7 +139,11 @@ const Table = ({ data }) => {
                   <th
                     key={key}
                     className="text-center pt-3 pb-3"
-                    style={{ textTransform: "capitalize", width: `${percentage}%`, minWidth: "100px" }}
+                    style={{
+                      textTransform: "capitalize",
+                      width: `${percentage}%`,
+                      minWidth: "100px",
+                    }}
                   >
                     {key}
                   </th>
@@ -109,6 +160,7 @@ const Table = ({ data }) => {
                         <input
                           type="text"
                           value={editRowData[key]}
+                          className="form-control"
                           onChange={(e) => {
                             e.preventDefault();
                             setEditRowData({
@@ -118,24 +170,34 @@ const Table = ({ data }) => {
                           }}
                         />
                       ) : (
-                        row[key]
+                        <>{row[key].length >= 150 ? row[key].toString().slice(0, 100) + "..." : row[key]}</>
                       )}
                     </td>
                   ))}
                   <td className="d-flex justify-content-center align-items-center">
                     {editRow === index ? (
+                      <>
                       <button
                         className="btn btn-primary m-1"
                         onClick={() => handleUpdate(index)}
+                        disabled={updateLoading}
                       >
-                        Update
+                        {updateLoading ? <SmallSpinner/> : "Update"}
                       </button>
+                      <button
+                        className="btn btn-primary m-1"
+                        onClick={() => {setEditRow(null)}}
+                        disabled={updateLoading}
+                      >
+                          Cancel
+                        </button>
+                      </>
                     ) : (
                       <>
                         <button
                           className="btn btn-primary m-1"
                           onClick={() => handleUpdateToEdit(index)}
-                          disabled={editRow != null}
+                          disabled={editRow != null || deleteLoading}
                         >
                           Edit
                         </button>
@@ -145,9 +207,9 @@ const Table = ({ data }) => {
                             setModalOpen(true);
                             setToDelete(index);
                           }}
-                          disabled={editRow != null}
+                          disabled={editRow != null || (deleteLoading)}
                         >
-                          Delete
+                          {deleteLoading && toDelete === index ? <SmallSpinner/> : "Delete"}
                         </button>
                       </>
                     )}
@@ -165,6 +227,7 @@ const Table = ({ data }) => {
                       onChange={(e) =>
                         setNewRow({ ...newRow, [key]: e.target.value })
                       }
+                      disabled={editRow != null || addLoading || deleteLoading || updateLoading}
                     />
                   </td>
                 ))}
@@ -172,14 +235,17 @@ const Table = ({ data }) => {
                   <button
                     className="btn btn-primary m-1"
                     onClick={handleAddRow}
+                    disabled={editRow != null || addLoading || deleteLoading || updateLoading}
                   >
-                    Add Row
+                    {addLoading ? <SmallSpinner/> : "Insert"}
                   </button>
                 </td>
               </tr>
             </tbody>
           </table>
-          <h4 className="text-center w-100">{tableData.length === 0 ? "Nothing to see here..." : ""}</h4>
+          <h4 className="text-center w-100">
+            {tableData.length === 0 ? "Nothing to see here..." : ""}
+          </h4>
         </div>
       </div>
     </>

@@ -7,7 +7,7 @@ namespace ReactWithASP.Server.Models.InputModels
         public Guid Id { get; set; }
 
         [Required(ErrorMessage = "Database Connection String required.")]
-        public required string dbEncryptedConnectionString { get; set; }
+        public required string dbConnectionString { get; set; }
 
         [Required(ErrorMessage = "Database Connection Name is required.")]
         public required string dbName { get; set; }

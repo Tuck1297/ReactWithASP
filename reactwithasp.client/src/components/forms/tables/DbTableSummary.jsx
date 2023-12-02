@@ -1,25 +1,31 @@
 import React, { useState } from "react";
 import Modal from "../../Modal";
 import { alertService } from "../../../services/alertService";
+import { externalDbService } from "../../../services/externalDbService";
 
-const Table = ({ data, switchView }) => {
+const Table = ({ data, switchView, currentDBInteracting }) => {
   const [tableData, setTableData] = useState(data);
-  const [newRow, setNewRow] = useState({});
-  const [editRow, setEditRow] = useState(null);
-  const [editRowData, setEditRowData] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [toDelete, setToDelete] = useState(null);
 
-  // TODOs will be sections that will connect with api connection of database.
-
-  // TODO: this page will display the databases's tables, number of rows in each table, all columns in each table, ability to update the name or delete a column in a table
-  // ability to delete a table and ability to access data within a particular table (third view)
+  // need to take a look at table rows index (showing -1 when there are one or two rows in the table)
 
   const handleDelete = (index) => {
-    // TODO - connect database delete action here
-    const updatedData = [...tableData];
-    updatedData.splice(index, 1);
-    setTableData(updatedData);
+    console.log(index);
+    setTimeout(async () => {
+      await externalDbService
+        .deleteTable(currentDBInteracting, tableData[index].tableName)
+        .then((result) => {
+          alertService.success("Table has successfully been deleted");
+          console.log(result);
+          const updatedData = [...tableData];
+          updatedData.splice(index, 1);
+          setTableData(updatedData);
+        })
+        .catch((error) => {
+          alertService.error(error);
+        });
+    }, 1000);
   };
 
   return (
@@ -92,7 +98,9 @@ const Table = ({ data, switchView }) => {
                     <button
                       className="btn btn-primary m-1"
                       onClick={() => {
-                        alertService.warning("What's up doc? Whatever it is, its not this feature.");
+                        alertService.warning(
+                          "What's up doc? Whatever it is, its not this feature."
+                        );
                       }}
                     >
                       Modify
@@ -102,8 +110,7 @@ const Table = ({ data, switchView }) => {
                     <button
                       className="btn btn-primary m-1"
                       onClick={() => {
-                        console.log(row)
-                        switchView(row)
+                        switchView(row);
                       }}
                     >
                       Access

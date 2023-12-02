@@ -117,7 +117,11 @@ const ConnectionStringManagementPage = () => {
         .updateTableInteracting(data.tableName, currentDBInteracting)
         .then((result) => {
           console.log("table interacting", result);
-          return externalDbService.getDataFromTable(currentDBInteracting, 0, 25);
+          return externalDbService.getDataFromTable(
+            currentDBInteracting,
+            0,
+            25
+          );
         })
         .then((result) => {
           setLoadedDataFromTable(result);
@@ -220,6 +224,7 @@ const ConnectionStringManagementPage = () => {
               <DbConnectionsSummaryTable
                 data={loadedDBs}
                 switchView={switchToTablesView}
+                currentDBInteracting={currentDBInteracting}
               />
             ) : (
               ""
@@ -228,12 +233,16 @@ const ConnectionStringManagementPage = () => {
               <DbTableSummary
                 data={loadedTablesFromDB}
                 switchView={switchToTableDataView}
+                currentDBInteracting={currentDBInteracting}
               />
             ) : (
               ""
             )}
             {currentDataDisplay.table_data ? (
-              <ObjectTable data={loadedDataFromTable} />
+              <ObjectTable
+                data={loadedDataFromTable}
+                currentDBInteracting={currentDBInteracting}
+              />
             ) : (
               ""
             )}

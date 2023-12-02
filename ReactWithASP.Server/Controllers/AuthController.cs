@@ -212,7 +212,7 @@ namespace ReactWithASP.Server.Controllers
                             });
 
 
-                return Ok("Success! Session token as been updated.");
+                return Ok("Success! Session token has been updated.");
             }
             catch (Exception error)
             {

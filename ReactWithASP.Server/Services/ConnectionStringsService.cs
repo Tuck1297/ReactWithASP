@@ -71,7 +71,7 @@ namespace ReactWithASP.Server.Services
 
             if (toUpdate != null)
             {
-                toUpdate.dbEncryptedConnectionString = model.dbEncryptedConnectionString;
+                toUpdate.dbConnectionString = model.dbConnectionString;
                 toUpdate.dbType = model.dbType;
                 toUpdate.dbName = model.dbName;
                 _dataContext.SaveChanges();

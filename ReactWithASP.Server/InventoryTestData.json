@@ -1,0 +1,702 @@
+[
+ {
+   "product_name": "Eggplant Oriental",
+   "brand": "Skimia",
+   "price": 782.38,
+   "quantity": 768,
+   "release_date": "10/8/2022"
+ },
+ {
+   "product_name": "Bread - Focaccia Quarter",
+   "brand": "Skippad",
+   "price": 7600.09,
+   "quantity": 165,
+   "release_date": "4/14/2010"
+ },
+ {
+   "product_name": "Bagel - 12 Grain Preslice",
+   "brand": "Dabvine",
+   "price": 570.05,
+   "quantity": 820,
+   "release_date": "11/15/2020"
+ },
+ {
+   "product_name": "Pernod",
+   "brand": "Mydeo",
+   "price": 8438.17,
+   "quantity": 482,
+   "release_date": "3/25/2016"
+ },
+ {
+   "product_name": "Sugar - Brown",
+   "brand": "Buzzdog",
+   "price": 5349.77,
+   "quantity": 493,
+   "release_date": "5/16/2011"
+ },
+ {
+   "product_name": "Food Colouring - Orange",
+   "brand": "Rhybox",
+   "price": 1185.77,
+   "quantity": 433,
+   "release_date": "1/2/2015"
+ },
+ {
+   "product_name": "Wine - Red, Black Opal Shiraz",
+   "brand": "Tagtune",
+   "price": 6660.96,
+   "quantity": 596,
+   "release_date": "5/1/2012"
+ },
+ {
+   "product_name": "Sugar - Individual Portions",
+   "brand": "Tagcat",
+   "price": 1804.98,
+   "quantity": 1,
+   "release_date": "9/10/2014"
+ },
+ {
+   "product_name": "Skirt - 29 Foot",
+   "brand": "Jamia",
+   "price": 192.41,
+   "quantity": 552,
+   "release_date": "12/5/2010"
+ },
+ {
+   "product_name": "Syrup - Monin - Passion Fruit",
+   "brand": "Zoombox",
+   "price": 3358.61,
+   "quantity": 387,
+   "release_date": "10/17/2011"
+ },
+ {
+   "product_name": "Mushroom - Porcini, Dry",
+   "brand": "Photofeed",
+   "price": 9324.12,
+   "quantity": 731,
+   "release_date": "6/10/2010"
+ },
+ {
+   "product_name": "Longos - Lasagna Veg",
+   "brand": "Kayveo",
+   "price": 2082.69,
+   "quantity": 704,
+   "release_date": "1/2/2018"
+ },
+ {
+   "product_name": "Veal - Slab Bacon",
+   "brand": "Bubbletube",
+   "price": 4505.43,
+   "quantity": 902,
+   "release_date": "10/11/2010"
+ },
+ {
+   "product_name": "Passion Fruit",
+   "brand": "Tagfeed",
+   "price": 8490.02,
+   "quantity": 753,
+   "release_date": "10/15/2018"
+ },
+ {
+   "product_name": "Apple - Northern Spy",
+   "brand": "Realbuzz",
+   "price": 1580.9,
+   "quantity": 805,
+   "release_date": "2/20/2013"
+ },
+ {
+   "product_name": "Sausage - Blood Pudding",
+   "brand": "Skilith",
+   "price": 6666.3,
+   "quantity": 159,
+   "release_date": "4/12/2010"
+ },
+ {
+   "product_name": "Wine - Domaine Boyar Royal",
+   "brand": "Skimia",
+   "price": 8005.99,
+   "quantity": 864,
+   "release_date": "2/16/2015"
+ },
+ {
+   "product_name": "Foil Wrap",
+   "brand": "Devbug",
+   "price": 5862.01,
+   "quantity": 918,
+   "release_date": "6/14/2022"
+ },
+ {
+   "product_name": "Nut - Almond, Blanched, Ground",
+   "brand": "Gigaclub",
+   "price": 6276.8,
+   "quantity": 575,
+   "release_date": "11/2/2012"
+ },
+ {
+   "product_name": "Milk - 2% 250 Ml",
+   "brand": "Zoombox",
+   "price": 2326.41,
+   "quantity": 687,
+   "release_date": "3/18/2022"
+ },
+ {
+   "product_name": "Apple - Delicious, Golden",
+   "brand": "Yamia",
+   "price": 1337.9,
+   "quantity": 354,
+   "release_date": "8/16/2016"
+ },
+ {
+   "product_name": "Truffle Paste",
+   "brand": "Dynava",
+   "price": 2846.53,
+   "quantity": 577,
+   "release_date": "6/9/2015"
+ },
+ {
+   "product_name": "Wood Chips - Regular",
+   "brand": "Zoozzy",
+   "price": 4315.53,
+   "quantity": 837,
+   "release_date": "4/11/2014"
+ },
+ {
+   "product_name": "Foie Gras",
+   "brand": "Skiptube",
+   "price": 9192.12,
+   "quantity": 353,
+   "release_date": "8/23/2012"
+ },
+ {
+   "product_name": "Yogurt - Cherry, 175 Gr",
+   "brand": "Feedspan",
+   "price": 1049.64,
+   "quantity": 787,
+   "release_date": "12/8/2012"
+ },
+ {
+   "product_name": "Garbage Bag - Clear",
+   "brand": "Rhybox",
+   "price": 831.03,
+   "quantity": 223,
+   "release_date": "8/18/2016"
+ },
+ {
+   "product_name": "Wine - Vidal Icewine Magnotta",
+   "brand": "Buzzbean",
+   "price": 4109.22,
+   "quantity": 657,
+   "release_date": "8/20/2017"
+ },
+ {
+   "product_name": "Cake - Pancake",
+   "brand": "Dabtype",
+   "price": 1293.34,
+   "quantity": 139,
+   "release_date": "2/6/2017"
+ },
+ {
+   "product_name": "Wine - Bouchard La Vignee Pinot",
+   "brand": "Realcube",
+   "price": 7093.97,
+   "quantity": 516,
+   "release_date": "9/19/2010"
+ },
+ {
+   "product_name": "Calypso - Pineapple Passion",
+   "brand": "Quaxo",
+   "price": 9002.76,
+   "quantity": 466,
+   "release_date": "11/7/2021"
+ },
+ {
+   "product_name": "Pie Filling - Pumpkin",
+   "brand": "Agivu",
+   "price": 9965.48,
+   "quantity": 931,
+   "release_date": "9/6/2015"
+ },
+ {
+   "product_name": "Lemonade - Strawberry, 591 Ml",
+   "brand": "Realbuzz",
+   "price": 1765.62,
+   "quantity": 944,
+   "release_date": "5/24/2019"
+ },
+ {
+   "product_name": "Piping Jelly - All Colours",
+   "brand": "DabZ",
+   "price": 2264.56,
+   "quantity": 693,
+   "release_date": "7/14/2022"
+ },
+ {
+   "product_name": "Artichoke - Fresh",
+   "brand": "Dablist",
+   "price": 7160.62,
+   "quantity": 676,
+   "release_date": "4/25/2017"
+ },
+ {
+   "product_name": "Puff Pastry - Slab",
+   "brand": "Kimia",
+   "price": 9322.59,
+   "quantity": 688,
+   "release_date": "12/18/2014"
+ },
+ {
+   "product_name": "Oil - Avocado",
+   "brand": "Tagfeed",
+   "price": 1245.95,
+   "quantity": 442,
+   "release_date": "11/11/2021"
+ },
+ {
+   "product_name": "Dome Lid Clear P92008h",
+   "brand": "Photofeed",
+   "price": 1556.71,
+   "quantity": 481,
+   "release_date": "7/6/2021"
+ },
+ {
+   "product_name": "Mints - Striped Red",
+   "brand": "Rhynyx",
+   "price": 2256.61,
+   "quantity": 568,
+   "release_date": "10/15/2012"
+ },
+ {
+   "product_name": "Tequila Rose Cream Liquor",
+   "brand": "Oyoloo",
+   "price": 6533.71,
+   "quantity": 18,
+   "release_date": "6/10/2022"
+ },
+ {
+   "product_name": "Lentils - Green, Dry",
+   "brand": "Shuffledrive",
+   "price": 982.68,
+   "quantity": 985,
+   "release_date": "3/13/2010"
+ },
+ {
+   "product_name": "Stock - Chicken, White",
+   "brand": "Avaveo",
+   "price": 5338.23,
+   "quantity": 363,
+   "release_date": "9/11/2014"
+ },
+ {
+   "product_name": "Pastry - Choclate Baked",
+   "brand": "Photofeed",
+   "price": 5142.27,
+   "quantity": 857,
+   "release_date": "1/1/2010"
+ },
+ {
+   "product_name": "Tendrils - Baby Pea, Organic",
+   "brand": "Jaxnation",
+   "price": 2423.7,
+   "quantity": 660,
+   "release_date": "9/18/2010"
+ },
+ {
+   "product_name": "Huck Towels White",
+   "brand": "Topiclounge",
+   "price": 2320.56,
+   "quantity": 783,
+   "release_date": "3/19/2015"
+ },
+ {
+   "product_name": "Beef Dry Aged Tenderloin Aaa",
+   "brand": "Demivee",
+   "price": 6168.87,
+   "quantity": 378,
+   "release_date": "3/28/2019"
+ },
+ {
+   "product_name": "Turkey - Breast, Boneless Sk On",
+   "brand": "Skimia",
+   "price": 2100.56,
+   "quantity": 230,
+   "release_date": "5/19/2021"
+ },
+ {
+   "product_name": "Broom - Angled",
+   "brand": "Twimm",
+   "price": 5007.3,
+   "quantity": 928,
+   "release_date": "3/17/2019"
+ },
+ {
+   "product_name": "Cake Sheet Combo Party Pack",
+   "brand": "Divavu",
+   "price": 6979.46,
+   "quantity": 373,
+   "release_date": "1/28/2011"
+ },
+ {
+   "product_name": "Puree - Blackcurrant",
+   "brand": "Photolist",
+   "price": 3759.09,
+   "quantity": 626,
+   "release_date": "3/3/2022"
+ },
+ {
+   "product_name": "Pasta - Ravioli",
+   "brand": "Camimbo",
+   "price": 5314.15,
+   "quantity": 412,
+   "release_date": "12/13/2018"
+ },
+ {
+   "product_name": "Peppercorns - Green",
+   "brand": "Skimia",
+   "price": 6278.25,
+   "quantity": 675,
+   "release_date": "3/19/2019"
+ },
+ {
+   "product_name": "Wine - Cabernet Sauvignon",
+   "brand": "Gigabox",
+   "price": 9087.34,
+   "quantity": 468,
+   "release_date": "5/11/2010"
+ },
+ {
+   "product_name": "Sobe - Liz Blizz",
+   "brand": "Ozu",
+   "price": 3260.17,
+   "quantity": 628,
+   "release_date": "4/15/2015"
+ },
+ {
+   "product_name": "Wine - Fume Blanc Fetzer",
+   "brand": "Leenti",
+   "price": 7951.26,
+   "quantity": 42,
+   "release_date": "6/14/2020"
+ },
+ {
+   "product_name": "Water - Tonic",
+   "brand": "Janyx",
+   "price": 3268.42,
+   "quantity": 948,
+   "release_date": "1/23/2016"
+ },
+ {
+   "product_name": "Salmon - Whole, 4 - 6 Pounds",
+   "brand": "Jayo",
+   "price": 6861.17,
+   "quantity": 818,
+   "release_date": "3/10/2012"
+ },
+ {
+   "product_name": "Sausage - Andouille",
+   "brand": "Browsezoom",
+   "price": 3062.85,
+   "quantity": 247,
+   "release_date": "12/24/2015"
+ },
+ {
+   "product_name": "Flavouring - Rum",
+   "brand": "Cogilith",
+   "price": 1546.82,
+   "quantity": 315,
+   "release_date": "3/8/2016"
+ },
+ {
+   "product_name": "Container - Clear 32 Oz",
+   "brand": "Youopia",
+   "price": 961.63,
+   "quantity": 211,
+   "release_date": "2/26/2010"
+ },
+ {
+   "product_name": "Pork - Bacon, Sliced",
+   "brand": "Bluejam",
+   "price": 9835.08,
+   "quantity": 519,
+   "release_date": "9/21/2020"
+ },
+ {
+   "product_name": "Bread - Pumpernickel",
+   "brand": "Omba",
+   "price": 5824.17,
+   "quantity": 92,
+   "release_date": "4/23/2021"
+ },
+ {
+   "product_name": "Cranberries - Fresh",
+   "brand": "Wordify",
+   "price": 7074.22,
+   "quantity": 752,
+   "release_date": "4/2/2014"
+ },
+ {
+   "product_name": "Venison - Striploin",
+   "brand": "Skibox",
+   "price": 4325.21,
+   "quantity": 938,
+   "release_date": "7/30/2020"
+ },
+ {
+   "product_name": "Cloves - Ground",
+   "brand": "Wordpedia",
+   "price": 8506.6,
+   "quantity": 319,
+   "release_date": "9/15/2019"
+ },
+ {
+   "product_name": "Turkey Leg With Drum And Thigh",
+   "brand": "Dabshots",
+   "price": 3942.23,
+   "quantity": 675,
+   "release_date": "3/3/2018"
+ },
+ {
+   "product_name": "Red Snapper - Fillet, Skin On",
+   "brand": "Wordpedia",
+   "price": 4619.42,
+   "quantity": 239,
+   "release_date": "7/28/2020"
+ },
+ {
+   "product_name": "Cloves - Ground",
+   "brand": "Flashset",
+   "price": 7830.03,
+   "quantity": 921,
+   "release_date": "4/16/2022"
+ },
+ {
+   "product_name": "Cheese - Grana Padano",
+   "brand": "Tagpad",
+   "price": 7181.58,
+   "quantity": 443,
+   "release_date": "1/26/2019"
+ },
+ {
+   "product_name": "Pepper - White, Whole",
+   "brand": "Voomm",
+   "price": 142.4,
+   "quantity": 116,
+   "release_date": "9/27/2014"
+ },
+ {
+   "product_name": "Snapple - Iced Tea Peach",
+   "brand": "Mydo",
+   "price": 2890.49,
+   "quantity": 826,
+   "release_date": "6/14/2019"
+ },
+ {
+   "product_name": "Wine - Magnotta - Cab Sauv",
+   "brand": "Mybuzz",
+   "price": 6463.22,
+   "quantity": 525,
+   "release_date": "8/25/2015"
+ },
+ {
+   "product_name": "Clams - Bay",
+   "brand": "Realfire",
+   "price": 8298.28,
+   "quantity": 402,
+   "release_date": "1/9/2014"
+ },
+ {
+   "product_name": "Vinegar - White Wine",
+   "brand": "Dabjam",
+   "price": 918.16,
+   "quantity": 93,
+   "release_date": "3/27/2011"
+ },
+ {
+   "product_name": "Wiberg Super Cure",
+   "brand": "Vinte",
+   "price": 8010.6,
+   "quantity": 99,
+   "release_date": "3/30/2013"
+ },
+ {
+   "product_name": "Pork - Backs - Boneless",
+   "brand": "Twimbo",
+   "price": 3972.86,
+   "quantity": 290,
+   "release_date": "4/18/2021"
+ },
+ {
+   "product_name": "Appetizer - Spring Roll, Veg",
+   "brand": "Edgeblab",
+   "price": 6306.25,
+   "quantity": 427,
+   "release_date": "12/22/2021"
+ },
+ {
+   "product_name": "Salmon - Atlantic, Fresh, Whole",
+   "brand": "Brightbean",
+   "price": 8289.89,
+   "quantity": 138,
+   "release_date": "11/9/2014"
+ },
+ {
+   "product_name": "Cookie Dough - Chocolate Chip",
+   "brand": "Plajo",
+   "price": 673.91,
+   "quantity": 112,
+   "release_date": "8/17/2021"
+ },
+ {
+   "product_name": "Vodka - Lemon, Absolut",
+   "brand": "Skiptube",
+   "price": 2117.43,
+   "quantity": 425,
+   "release_date": "11/21/2015"
+ },
+ {
+   "product_name": "Flavouring - Raspberry",
+   "brand": "Skinte",
+   "price": 6607.32,
+   "quantity": 684,
+   "release_date": "6/7/2012"
+ },
+ {
+   "product_name": "Rosemary - Dry",
+   "brand": "Kwilith",
+   "price": 979.78,
+   "quantity": 410,
+   "release_date": "9/16/2018"
+ },
+ {
+   "product_name": "Nut - Pistachio, Shelled",
+   "brand": "Mycat",
+   "price": 213.07,
+   "quantity": 995,
+   "release_date": "9/8/2010"
+ },
+ {
+   "product_name": "Egg - Salad Premix",
+   "brand": "Jayo",
+   "price": 9435.45,
+   "quantity": 373,
+   "release_date": "12/11/2016"
+ },
+ {
+   "product_name": "Sweet Pea Sprouts",
+   "brand": "Demizz",
+   "price": 9464.15,
+   "quantity": 358,
+   "release_date": "1/10/2016"
+ },
+ {
+   "product_name": "Jam - Raspberry",
+   "brand": "Gigaclub",
+   "price": 3589.74,
+   "quantity": 84,
+   "release_date": "1/30/2012"
+ },
+ {
+   "product_name": "Devonshire Cream",
+   "brand": "Brightbean",
+   "price": 9330.01,
+   "quantity": 993,
+   "release_date": "12/14/2019"
+ },
+ {
+   "product_name": "Salmon - Fillets",
+   "brand": "Flipopia",
+   "price": 9466.91,
+   "quantity": 449,
+   "release_date": "9/23/2020"
+ },
+ {
+   "product_name": "Flour - Masa De Harina Mexican",
+   "brand": "Wordify",
+   "price": 9981,
+   "quantity": 329,
+   "release_date": "3/27/2011"
+ },
+ {
+   "product_name": "Spring Roll Veg Mini",
+   "brand": "Rhynyx",
+   "price": 8952.45,
+   "quantity": 99,
+   "release_date": "2/27/2018"
+ },
+ {
+   "product_name": "Tart - Pecan Butter Squares",
+   "brand": "Teklist",
+   "price": 3247.59,
+   "quantity": 565,
+   "release_date": "11/23/2017"
+ },
+ {
+   "product_name": "Goldschalger",
+   "brand": "Digitube",
+   "price": 4992.02,
+   "quantity": 858,
+   "release_date": "1/25/2011"
+ },
+ {
+   "product_name": "Wine - Alicanca Vinho Verde",
+   "brand": "Plambee",
+   "price": 956.78,
+   "quantity": 553,
+   "release_date": "1/21/2019"
+ },
+ {
+   "product_name": "Wine - Chateauneuf Du Pape",
+   "brand": "Riffpath",
+   "price": 6623.44,
+   "quantity": 106,
+   "release_date": "5/26/2021"
+ },
+ {
+   "product_name": "Mushroom - Shitake, Dry",
+   "brand": "Skidoo",
+   "price": 8455.58,
+   "quantity": 141,
+   "release_date": "7/27/2017"
+ },
+ {
+   "product_name": "Chips - Miss Vickies",
+   "brand": "Skippad",
+   "price": 9774.81,
+   "quantity": 971,
+   "release_date": "3/3/2016"
+ },
+ {
+   "product_name": "Table Cloth 62x120 Colour",
+   "brand": "Fivespan",
+   "price": 3377.11,
+   "quantity": 267,
+   "release_date": "4/16/2014"
+ },
+ {
+   "product_name": "Straw - Regular",
+   "brand": "Voonte",
+   "price": 9688.4,
+   "quantity": 73,
+   "release_date": "7/8/2013"
+ },
+ {
+   "product_name": "Artichokes - Knobless, White",
+   "brand": "Kimia",
+   "price": 7498.13,
+   "quantity": 602,
+   "release_date": "9/8/2021"
+ },
+ {
+   "product_name": "Lobster - Live",
+   "brand": "Oyope",
+   "price": 1164.72,
+   "quantity": 31,
+   "release_date": "11/16/2012"
+ },
+ {
+   "product_name": "Ecolab - Medallion",
+   "brand": "Muxo",
+   "price": 2653.66,
+   "quantity": 66,
+   "release_date": "1/11/2019"
+ }
+]

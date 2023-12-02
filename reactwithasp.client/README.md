@@ -27,3 +27,18 @@ Still need pages for the following account api routes
     -> first need total number of rows in database
         -> this will inform access to first 50 rows in database
         -> if there are more than 50 rows then create a manage state that will select and retrieve current index of rows in database (organize by pages) - this will all be managed in the front end so the data will not be stored anywhere...
+
+3. watch cloud native video tomorrow (MUST DO!!!)
+4. work with ChatGPT AI API before december end of day december 2nd...
+
+5. Fix querying problem with datetime for delete add and update
+6. Fix tablename formatting when being sent problem
+7. Add left and right arrow keys to look through pages of data
+8. see if I can update query (select) to order by particular column
+
+## Notes
+- This project currently assumes that the accessed postgresql database is under the public schema
+- This project currently only deletes, updates and creates rows with simple data types (int, string, double)
+- This project currently only works with postgresql databases
+- This project can easily integrate other databases which was the intention of the project
+- This project deletes tables from schemas but does not delete schemas from a database

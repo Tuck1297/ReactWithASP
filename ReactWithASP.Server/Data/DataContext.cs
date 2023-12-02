@@ -8,11 +8,10 @@ namespace ReactWithASP.Server.Data
 {
     public class DataContext : DbContext
     {
-        public DataContext(DbContextOptions options) :base(options)
+        public DataContext(DbContextOptions<DataContext> options) :base(options)
         {
             
         }
-        // define our tables
 
         public DbSet<User> Users { get; set; }
         public DbSet<ConnectionStrings> ConnectionStrings { get; set; }
@@ -44,16 +43,16 @@ namespace ReactWithASP.Server.Data
             modelBuilder.Entity<User>().HasData(new User
             {
                 UserId = Guid.Parse("D63F0CA3-E25D-4583-9354-57F110538F45"),
-                Email = "dev@tuckerjohnson.me",
-                FirstName = "Tucker",
-                LastName = "Johnson",
+                Email = "test1@hackathon.com",
+                FirstName = "TestAdmin",
+                LastName = "Tester",
                 Role = "Admin"
             });
 
             modelBuilder.Entity<UserAccount>().HasData(new UserAccount
             {
                 UserId = Guid.Parse("D63F0CA3-E25D-4583-9354-57F110538F45"),
-                Email = "dev@tuckerjohnson.me",
+                Email = "test1@hackathon.com",
                 PasswordHash = BC.HashPassword("Password1!"),
                 RefreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
                 TokenExpires = DateTime.UtcNow.AddMinutes(30),
@@ -64,16 +63,16 @@ namespace ReactWithASP.Server.Data
             modelBuilder.Entity<User>().HasData(new User
             {
                 UserId = Guid.Parse("D63F0CA3-E25D-4583-9354-57F110538A55"),
-                Email = "hashtimemail@gmail.com",
-                FirstName = "Tucker",
-                LastName = "Johnson",
-                Role = "Admin"
+                Email = "test2@hackathon.com",
+                FirstName = "TestUser",
+                LastName = "Tester",
+                Role = "User"
             });
 
             modelBuilder.Entity<UserAccount>().HasData(new UserAccount
             {
                 UserId = Guid.Parse("D63F0CA3-E25D-4583-9354-57F110538A55"),
-                Email = "hashtimemail@gmail.com",
+                Email = "test2hackathon.com",
                 PasswordHash = BC.HashPassword("Password1!"),
                 RefreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
                 TokenExpires = DateTime.UtcNow.AddMinutes(30),
@@ -83,18 +82,18 @@ namespace ReactWithASP.Server.Data
             modelBuilder.Entity<ConnectionStrings>().HasData(new ConnectionStrings
             {
                 Id = Guid.NewGuid(),
-                dbName = "HackathonDB",
+                dbName = "SupplyChain",
                 dbType = "Postgres",
-                dbEncryptedConnectionString = "host=127.0.0.1; database=HackathonDB; port=5420; user id=postgres; password=123456;",
+                dbConnectionString = "host=127.0.0.1; database=SupplyChain; port=5420; user id=postgres; password=123456;",
                 UserId = Guid.Parse("D63F0CA3-E25D-4583-9354-57F110538F45")
             });
 
             modelBuilder.Entity<ConnectionStrings>().HasData(new ConnectionStrings
             {
                 Id = Guid.NewGuid(),
-                dbName = "ExploreMoreUSA",
+                dbName = "WebsiteInfo",
                 dbType = "Postgres",
-                dbEncryptedConnectionString = "host=127.0.0.1; database=exploremoreusa; port=5420; user id=postgres; password=123456;",
+                dbConnectionString = "host=127.0.0.1; database=WebsiteInfo; port=5420; user id=postgres; password=123456;",
                 UserId = Guid.Parse("D63F0CA3-E25D-4583-9354-57F110538F45")
             });
 
