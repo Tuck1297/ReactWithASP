@@ -56,6 +56,17 @@ function buildFormSchema(formObj, currentSchema) {
       .matches(/^(?=.*[A-Z])/, 'Must contain at least one uppercase character')
       .oneOf([Yup.ref("password"), null], "Passwords must match");
   }
+  if (formObj.cspassword) {
+    schema.cspassword = Yup.string()
+      .required("Please enter a Password")
+      .min(4, "Password must be at least 4 characters")
+  }
+  if (formObj.csconfirmPassword) {
+    schema.csconfirmPassword = Yup.string()
+      .required("Please confirm your password choice")
+      .min(4, "Password must be at least 8 characters")
+      .oneOf([Yup.ref("cspassword"), null], "Passwords must match");
+  }
   if (formObj.message) {
     schema.message = Yup.string().required("Message is required");
   }
@@ -65,8 +76,26 @@ function buildFormSchema(formObj, currentSchema) {
   if (formObj.lastname) {
     schema.lastname = Yup.string().required("Please enter your last name.")
   }
-  if (formObj.code) {
-    schema.code = Yup.string().required("Code is required");
+  if (formObj.csStringName) {
+    schema.csStringName = Yup.string().required("This field is required.");
+  }
+  if (formObj.host) {
+    schema.host = Yup.string().required("This field is required.");
+  }
+  if (formObj.dbName) {
+    schema.dbName = Yup.string().required("This field is required.");
+  }
+  if (formObj.port) {
+    schema.port = Yup.string().required("This field is required.");
+  }
+  if (formObj.dbUserId) {
+    schema.dbUserId = Yup.string().required("This field is required.");
+  }
+  if (formObj.dbSchema) {
+    schema.dbSchema = Yup.string().required("This field is required.");
+  }
+  if (formObj.dropdown) {
+    schema.dropdown = Yup.string().required("This field is required.");
   }
   return schema;
 }

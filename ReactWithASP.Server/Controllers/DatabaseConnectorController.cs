@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Npgsql;
+using NpgsqlTypes;
 using ReactWithASP.Server.Helpers;
 using ReactWithASP.Server.Models;
 using ReactWithASP.Server.Services;
@@ -28,7 +29,7 @@ namespace ReactWithASP.Server.Controllers
             _connectionStringsService = connectionStringService;
         }
 
-        [HttpGet("table/{dbId}", Name = "Get All Table Names")]
+        [HttpGet("table/{dbId}", Name = "GetAllTableNames")]
         [Authorize]
         public async Task<ActionResult> GetTables(Guid dbId)
         {
@@ -63,7 +64,7 @@ namespace ReactWithASP.Server.Controllers
             }
         }
 
-        [HttpPut("table/{dbId}/update-accessing", Name = "Update Table to access in database.")]
+        [HttpPut("table/{dbId}/update-accessing", Name = "UpdateRowWithToAccessDatabase")]
         [Authorize]
         public async Task<ActionResult> UpdateAccessingTable(Guid dbId, [FromBody] string tableName)
         {
@@ -127,7 +128,7 @@ namespace ReactWithASP.Server.Controllers
                 string cs = dbConnectData.dbConnectionString.ToString();
                 using (var dbExecutor = new DbExecutor(cs))
                 {
-                    var query = "DROP TABLE " + tableName;
+                    var query = "DROP TABLE " + '"' + tableName + '"';
                     try
                     {
                         var tableNameResult = await dbExecutor.ExecuteQuery<dynamic>(query);
@@ -232,7 +233,7 @@ namespace ReactWithASP.Server.Controllers
 
                     string conditions = string.Join(" AND ", data.Keys.Select(key => $"{key} = (@{key})"));
 
-                    string query = $"DELETE FROM {tableName} WHERE {conditions}";
+                    string query = $"DELETE FROM {'"' + tableName + '"'} WHERE {conditions}";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
                     {
@@ -244,8 +245,11 @@ namespace ReactWithASP.Server.Controllers
                                 string key = parameter.Name;
                                 var value = parameter.Value;
 
-                                command.Parameters.Add(parameter.Name, DbTypeConverter.GetNpgsqlDbType(parameter.Value.Type));
-                                command.Parameters[parameter.Name].Value = DbTypeConverter.ConvertJTokenToType(value, value.Type);
+                                NpgsqlDbType type = DbTypeConverter.GetNpgsqlDbType(value.Type, value);
+                                object convertedValue = DbTypeConverter.ConvertJTokenToType(value, value.Type, type);
+
+                                command.Parameters.Add(parameter.Name, type);
+                                command.Parameters[parameter.Name].Value = convertedValue;
                             }
                             int rowsAffected = command.ExecuteNonQuery();
                             if (rowsAffected > 0)
@@ -308,7 +312,7 @@ namespace ReactWithASP.Server.Controllers
                     string columns = string.Join(", ", data.Keys);
                     string values = string.Join(", ", data.Keys.Select(key => $"(@{key})"));
 
-                    string query = $"INSERT INTO {tableName} ({columns}) VALUES ({values}) RETURNING *;";
+                    string query = $"INSERT INTO {'"' + tableName + '"'} ({columns}) VALUES ({values}) RETURNING *;";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
                     {
@@ -319,9 +323,12 @@ namespace ReactWithASP.Server.Controllers
                             {
                                 string key = parameter.Name;
                                 var value = parameter.Value;
-                                
-                                command.Parameters.Add(parameter.Name, DbTypeConverter.GetNpgsqlDbType(parameter.Value.Type));
-                                command.Parameters[parameter.Name].Value = DbTypeConverter.ConvertJTokenToType(value, value.Type);
+
+                                NpgsqlDbType type = DbTypeConverter.GetNpgsqlDbType(value.Type, value);
+                                object convertedValue = DbTypeConverter.ConvertJTokenToType(value, value.Type, type);
+
+                                command.Parameters.Add(parameter.Name, type);
+                                command.Parameters[parameter.Name].Value = convertedValue;
                             }
                             int rowsAffected = command.ExecuteNonQuery();
                             if (rowsAffected > 0)
@@ -403,7 +410,7 @@ namespace ReactWithASP.Server.Controllers
                     string setClause = string.Join(", ", dataNew.Keys.Select(key => $"{key} = (@{key})"));
                     string whereClause = string.Join(" AND ", dataNew.Keys.Select(key => $"{key} = (@old_{key})"));
 
-                    string query = $"UPDATE {tableName} SET {setClause} WHERE {whereClause}";
+                    string query = $"UPDATE {'"'+tableName+'"'} SET {setClause} WHERE {whereClause}";
 
                     using (NpgsqlCommand command = new NpgsqlCommand(query, connection))
                     {
@@ -415,16 +422,22 @@ namespace ReactWithASP.Server.Controllers
                                 string key = parameter.Name;
                                 var value = parameter.Value;
 
-                                command.Parameters.Add(parameter.Name, DbTypeConverter.GetNpgsqlDbType(parameter.Value.Type));
-                                command.Parameters[parameter.Name].Value = DbTypeConverter.ConvertJTokenToType(value, value.Type);
+                                NpgsqlDbType type = DbTypeConverter.GetNpgsqlDbType(value.Type, value);
+                                object convertedValue = DbTypeConverter.ConvertJTokenToType(value, value.Type, type);
+
+                                command.Parameters.Add(parameter.Name, type);
+                                command.Parameters[parameter.Name].Value = convertedValue;
                             }
                             foreach(var parameter in oldData.Properties())
                             {
                                 string key = parameter.Name;
                                 var value = parameter.Value;
 
-                                command.Parameters.Add(parameter.Name, DbTypeConverter.GetNpgsqlDbType(parameter.Value.Type));
-                                command.Parameters[parameter.Name].Value = DbTypeConverter.ConvertJTokenToType(value, value.Type);
+                                NpgsqlDbType type = DbTypeConverter.GetNpgsqlDbType(value.Type, value);
+                                object convertedValue = DbTypeConverter.ConvertJTokenToType(value, value.Type, type);
+
+                                command.Parameters.Add(parameter.Name, type);
+                                command.Parameters[parameter.Name].Value = convertedValue;
                             }
 
                             int rowsAffected = command.ExecuteNonQuery();
@@ -438,7 +451,8 @@ namespace ReactWithASP.Server.Controllers
                         catch (Exception error)
                         {
                             _logger.LogError(error.Message);
-                            return BadRequest(FormatErrorMessage(error.Message));
+                            //return BadRequest(FormatErrorMessage(error.Message));
+                            return BadRequest(error.Message);
                         }
                     }
                 }
@@ -484,6 +498,13 @@ namespace ReactWithASP.Server.Controllers
                 int length = indexOfDetail - startIndex;
 
                 return message.Substring(startIndex, length).Trim().ToUpper() + ".";
+            }
+
+            if (indexOfColon != -1)
+            {
+                // Extract the message after the ":"
+                int startIndex = indexOfColon + 1;
+                return message.Substring(startIndex, message.Length).Trim().ToUpper() + ".";
             }
 
             // Return the original string if the pattern is not found

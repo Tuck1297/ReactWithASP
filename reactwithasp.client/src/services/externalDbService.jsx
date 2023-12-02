@@ -22,7 +22,7 @@ async function updateTableInteracting(tableName, dbId) {
 }
 
 async function deleteTable(dbId, tableName) {
-  return await fetchWrapper.delete(`external/table/${dbId}/${tableName}`);
+ // return await fetchWrapper.delete(`external/table/${dbId}/${tableName}`);
 }
 
 // end-page is limit in sql
@@ -51,7 +51,8 @@ async function updateRow(dbId, oldRowData, newRowData) {
     // Assign the value to the updated key in the new object
     updatedObject[updatedKey] = oldRowData[key];
   }
-  return await fetchWrapper.put(`external/data/${dbId}/update`, { oldData: updatedObject, newData: convertStringsToNumbers(newRowData) });
+  console.log(newRowData, oldRowData)
+ return await fetchWrapper.put(`external/data/${dbId}/update`, { oldData: updatedObject, newData: convertStringsToNumbers(newRowData) });
 }
 
 function convertStringsToNumbers(obj) {
@@ -59,7 +60,9 @@ function convertStringsToNumbers(obj) {
 
   for (var key in obj) {
       if (obj.hasOwnProperty(key)) {
-          if (isNaN(obj[key])) {
+          if (typeof obj[key] === 'boolean') {
+            updatedObject[key] = obj[key];
+          } else if (isNaN(obj[key])) {
               updatedObject[key] = obj[key];
           } else {
               updatedObject[key] = Number(obj[key]);

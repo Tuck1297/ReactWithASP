@@ -2,16 +2,18 @@ import React, { useState } from "react";
 import Modal from "../../Modal";
 import { alertService } from "../../../services/alertService";
 import { externalDbService } from "../../../services/externalDbService";
+import SmallSpinner from "../../loading/SmallSpinner";
 
 const Table = ({ data, switchView, currentDBInteracting }) => {
   const [tableData, setTableData] = useState(data);
   const [modalOpen, setModalOpen] = useState(false);
   const [toDelete, setToDelete] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   // need to take a look at table rows index (showing -1 when there are one or two rows in the table)
 
   const handleDelete = (index) => {
-    console.log(index);
+    setDeleteLoading(true);
     setTimeout(async () => {
       await externalDbService
         .deleteTable(currentDBInteracting, tableData[index].tableName)
@@ -21,12 +23,24 @@ const Table = ({ data, switchView, currentDBInteracting }) => {
           const updatedData = [...tableData];
           updatedData.splice(index, 1);
           setTableData(updatedData);
+          setDeleteLoading(false);
+          setToDelete(null);
         })
         .catch((error) => {
           alertService.error(error);
+          setDeleteLoading(false);
+          setToDelete(null);
         });
     }, 1000);
   };
+
+  if (tableData.length === 0) {
+    return (
+      <>
+        <h4 className="text-center w-100 mt-5">Nothing to see here...</h4>
+      </>
+    );
+  }
 
   return (
     <>
@@ -38,7 +52,6 @@ const Table = ({ data, switchView, currentDBInteracting }) => {
         btnAction={() => {
           handleDelete(toDelete);
           setModalOpen(false);
-          setToDelete(null);
         }}
       ></Modal>
       <div className="d-flex justify-content-center flex-column">
@@ -90,8 +103,13 @@ const Table = ({ data, switchView, currentDBInteracting }) => {
                         setModalOpen(true);
                         setToDelete(index);
                       }}
+                      disabled={deleteLoading}
                     >
-                      Delete
+                      {deleteLoading && toDelete === index ? (
+                            <SmallSpinner />
+                          ) : (
+                            "Delete"
+                          )}
                     </button>
                   </td>
                   <td className="text-center">
@@ -102,6 +120,7 @@ const Table = ({ data, switchView, currentDBInteracting }) => {
                           "What's up doc? Whatever it is, its not this feature."
                         );
                       }}
+                      disabled={deleteLoading}
                     >
                       Modify
                     </button>
@@ -112,6 +131,7 @@ const Table = ({ data, switchView, currentDBInteracting }) => {
                       onClick={() => {
                         switchView(row);
                       }}
+                      disabled={deleteLoading}
                     >
                       Access
                     </button>

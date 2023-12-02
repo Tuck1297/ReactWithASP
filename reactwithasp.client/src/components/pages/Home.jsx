@@ -9,7 +9,7 @@ import { useState, useContext } from "react";
 import { UserAuthContext } from "../UserAuthContext";
 
 const HomePage = () => {
-  const {signedIn, setSignedIn} = useContext(UserAuthContext);
+  const { signedIn, setSignedIn } = useContext(UserAuthContext);
   return (
     <div className="page">
       <Row>
@@ -17,10 +17,10 @@ const HomePage = () => {
         <Col ColNumSize="6">
           <CenterElement>
             <Card header="Home Page">
-              <p className="text-center">Welcome! {signedIn.firstname} This is the homepage...</p>
-              <CenterElement>
-                {/* <LargeSpinner /> */}
-              </CenterElement>
+              <p className="text-center">
+                Welcome! {signedIn.firstname} This is the homepage...
+              </p>
+              <CenterElement>{/* <LargeSpinner /> */}</CenterElement>
             </Card>
           </CenterElement>
         </Col>

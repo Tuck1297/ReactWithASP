@@ -13,10 +13,27 @@ const Footer = () => {
         </li>
         {signedIn.loggedIn ? (
           <>
-            {" "}
             <li className="nav-item">
               <NavLink className="nav-link px-2 text-muted" to="/account/home">
                 Profile
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link px-2 text-muted" to="/db/cs-manage">
+                Databases
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link px-2 text-muted" to="/db/cs-new">
+                New Connection
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink
+                className="nav-link px-2 text-muted"
+                to="/account/manage"
+              >
+                Admin Tools
               </NavLink>
             </li>
           </>

@@ -82,18 +82,18 @@ const InfoPage = () => {
                   <CenterElement>
                     {signedIn.role === "Admin" ? (
                       <>
-                        <NavLink
+                        {/* <NavLink
                           to="/account/manage"
                           className="btn btn-primary m-1 mt-4"
                         >
                           Manage Accounts
-                        </NavLink>
-                        <NavLink
+                        </NavLink> */}
+                        {/* <NavLink
                           to="/db/cs-manage"
                           className="btn btn-primary m-1 mt-4"
                         >
                           See Databases
-                        </NavLink>
+                        </NavLink> */}
                       </>
                     ) : (
                       ""

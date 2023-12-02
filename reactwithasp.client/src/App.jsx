@@ -4,8 +4,6 @@ import LoginPage from "./components/pages/account/Login";
 import RegisterPage from "./components/pages/account/Register";
 import InfoPage from "./components/pages/account/Info";
 import ErrorPage from "./components/pages/ErrorPage";
-import ForgotPasswordPage from "./components/pages/account/ForgotPassword";
-import ResetPasswordPage from "./components/pages/account/ResetPassword";
 import ManageUsersPage from "./components/pages/account/ManageUsers";
 import DbConnectorManagementPage from "./components/pages/account/DbConnectorManagement";
 import Navbar from "./components/Navbar";
@@ -14,8 +12,8 @@ import { UserAuthContext } from "./components/UserAuthContext";
 import { useState, useEffect } from "react";
 import Alert from "./components/Alert";
 import { useNavigate } from "react-router-dom";
-import { alertService } from "./services/alertService";
 import { userService } from "./services/userService";
+import NewConnectionPage from "./components/pages/account/NewConnection";
 
 export default function App() {
   const navigate = useNavigate();
@@ -71,15 +69,8 @@ export default function App() {
             <Route path="/account/register" element={<RegisterPage />}></Route>
             <Route path="/account/home" element={<InfoPage />}></Route>
             <Route path="/account/manage" element={<ManageUsersPage />}></Route>
-            <Route
-              path="/account/forgotpassword"
-              element={<ForgotPasswordPage />}
-            ></Route>
-            <Route
-              path="/account/resetpassword"
-              element={<ResetPasswordPage />}
-            ></Route>
             <Route path="/db/cs-manage" element={<DbConnectorManagementPage/>}></Route>
+            <Route path="/db/cs-new" element={<NewConnectionPage/>}></Route>
             <Route path="*" element={<ErrorPage />}></Route>
           </Route>
         </Routes>

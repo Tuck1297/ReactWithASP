@@ -12,7 +12,7 @@ const LoginPage = () => {
         <Col ColNumSize="3"> </Col>
         <Col ColNumSize="6">
           <CenterElement>
-            <Card header="Login">
+            <Card header="Login" className="mt-5">
               <LoginForm />
             </Card>
           </CenterElement>

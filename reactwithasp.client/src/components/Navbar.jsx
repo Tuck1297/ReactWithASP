@@ -70,6 +70,39 @@ const Navbar = () => {
                     </NavLink>
                   </li>
                   <li className="nav-item">
+                    <NavLink
+                      style={({ isActive }) => {
+                        return isActive ? { color: "red" } : {};
+                      }}
+                      className="nav-link"
+                      to="/db/cs-manage"
+                    >
+                      Databases
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <NavLink
+                      style={({ isActive }) => {
+                        return isActive ? { color: "red" } : {};
+                      }}
+                      className="nav-link"
+                      to="/db/cs-new"
+                    >
+                      New Connection
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
+                    <NavLink
+                      style={({ isActive }) => {
+                        return isActive ? { color: "red" } : {};
+                      }}
+                      className="nav-link"
+                      to="/account/manage"
+                    >
+                      Admin Tools
+                    </NavLink>
+                  </li>
+                  <li className="nav-item">
                     <button
                       className="nav-link text-center w-100"
                       onClick={logout}

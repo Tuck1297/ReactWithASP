@@ -5,8 +5,17 @@ namespace ReactWithASP.Server.Helpers
 {
     public class DbTypeConverter
     {
-        public static NpgsqlDbType GetNpgsqlDbType(JTokenType jTokenType)
+        public static NpgsqlDbType GetNpgsqlDbType(JTokenType jTokenType, JToken value)
         {
+
+            if (jTokenType == JTokenType.String)
+            {
+                if (Guid.TryParse(value.ToString(), out var id))
+                {
+                    return NpgsqlDbType.Uuid;
+                }
+            }
+
             switch (jTokenType)
             {
                 case JTokenType.String:
@@ -16,6 +25,10 @@ namespace ReactWithASP.Server.Helpers
                 case JTokenType.Float:
                     return NpgsqlDbType.Numeric;
                 case JTokenType.Date:
+                    if (DateTimeOffset.TryParse(value.ToString(), out DateTimeOffset dateTimeWithTimeZone))
+                    {
+                        return NpgsqlDbType.TimestampTz;
+                    }
                     return NpgsqlDbType.Timestamp;
                 case JTokenType.Boolean:
                     return NpgsqlDbType.Boolean;
@@ -34,8 +47,14 @@ namespace ReactWithASP.Server.Helpers
             }
         }
 
-        public static object ConvertJTokenToType(JToken token, JTokenType tokenType)
+        public static object ConvertJTokenToType(JToken token, JTokenType tokenType, NpgsqlDbType npgsqlType)
         {
+
+            if (npgsqlType == NpgsqlDbType.Uuid) 
+            {
+                tokenType = JTokenType.Guid;
+            }
+
             switch (tokenType)
             {
                 case JTokenType.String:
@@ -45,6 +64,12 @@ namespace ReactWithASP.Server.Helpers
                 case JTokenType.Float:
                     return token.ToObject<float>();
                 case JTokenType.Date:
+
+                    if (DateTimeOffset.TryParse(token.ToString(), out DateTimeOffset dateTimeWithTimeZone))
+                    {
+                        return token.ToObject<DateTimeOffset>();
+                    }
+
                     return token.ToObject<DateTime>();
                 case JTokenType.Boolean:
                     return token.ToObject<bool>();

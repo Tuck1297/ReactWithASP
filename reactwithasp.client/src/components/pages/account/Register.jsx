@@ -11,7 +11,7 @@ const RegisterPage = () => {
         <Col ColNumSize="3"> </Col>
         <Col ColNumSize="6">
           <CenterElement>
-            <Card header="Register">
+            <Card header="Register" className="mt-5">
               <RegisterForm />
             </Card>
           </CenterElement>

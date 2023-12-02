@@ -40,7 +40,7 @@ const Table = ({ data, currentDBInteracting }) => {
   const handleDelete = (index) => {
     const deleteParams = tableData[index];
     setDeleteLoading(true);
-    console.log(index, toDelete, deleteLoading)
+    console.log(index, toDelete, deleteLoading);
 
     setTimeout(async () => {
       await externalDbService
@@ -56,6 +56,7 @@ const Table = ({ data, currentDBInteracting }) => {
         .catch((error) => {
           alertService.error(error);
           setDeleteLoading(false);
+          setToDelete(null);
         });
     }, 1000);
   };
@@ -81,7 +82,7 @@ const Table = ({ data, currentDBInteracting }) => {
           setAddLoading(false);
         })
         .catch((error) => {
-          console.error(error)
+          console.error(error);
           alertService.error(error);
           setAddLoading(false);
         });
@@ -118,6 +119,14 @@ const Table = ({ data, currentDBInteracting }) => {
     percentage = 0;
   }
 
+  if (tableData.length === 0) {
+    return (
+      <>
+        <h4 className="text-center w-100 mt-5">Nothing to see here...</h4>
+      </>
+    );
+  }
+
   return (
     <>
       <Modal
@@ -148,7 +157,12 @@ const Table = ({ data, currentDBInteracting }) => {
                     {key}
                   </th>
                 ))}
-                <th className="text-center pt-3 pb-3">Actions</th>
+                <th
+                  className="text-center pt-3 pb-3"
+                  style={{ width: `${percentage}%`, minWidth: "100px" }}
+                >
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -170,25 +184,31 @@ const Table = ({ data, currentDBInteracting }) => {
                           }}
                         />
                       ) : (
-                        <>{row[key].length >= 150 ? row[key].toString().slice(0, 100) + "..." : row[key]}</>
+                        <>
+                          {row[key].length >= 150
+                            ? row[key].toString().slice(0, 100) + "..."
+                            : row[key].toString()}
+                        </>
                       )}
                     </td>
                   ))}
                   <td className="d-flex justify-content-center align-items-center">
                     {editRow === index ? (
                       <>
-                      <button
-                        className="btn btn-primary m-1"
-                        onClick={() => handleUpdate(index)}
-                        disabled={updateLoading}
-                      >
-                        {updateLoading ? <SmallSpinner/> : "Update"}
-                      </button>
-                      <button
-                        className="btn btn-primary m-1"
-                        onClick={() => {setEditRow(null)}}
-                        disabled={updateLoading}
-                      >
+                        <button
+                          className="btn btn-primary m-1"
+                          onClick={() => handleUpdate(index)}
+                          disabled={updateLoading}
+                        >
+                          {updateLoading ? <SmallSpinner /> : "Update"}
+                        </button>
+                        <button
+                          className="btn btn-primary m-1"
+                          onClick={() => {
+                            setEditRow(null);
+                          }}
+                          disabled={updateLoading}
+                        >
                           Cancel
                         </button>
                       </>
@@ -207,9 +227,13 @@ const Table = ({ data, currentDBInteracting }) => {
                             setModalOpen(true);
                             setToDelete(index);
                           }}
-                          disabled={editRow != null || (deleteLoading)}
+                          disabled={editRow != null || deleteLoading}
                         >
-                          {deleteLoading && toDelete === index ? <SmallSpinner/> : "Delete"}
+                          {deleteLoading && toDelete === index ? (
+                            <SmallSpinner />
+                          ) : (
+                            "Delete"
+                          )}
                         </button>
                       </>
                     )}
@@ -227,7 +251,12 @@ const Table = ({ data, currentDBInteracting }) => {
                       onChange={(e) =>
                         setNewRow({ ...newRow, [key]: e.target.value })
                       }
-                      disabled={editRow != null || addLoading || deleteLoading || updateLoading}
+                      disabled={
+                        editRow != null ||
+                        addLoading ||
+                        deleteLoading ||
+                        updateLoading
+                      }
                     />
                   </td>
                 ))}
@@ -235,9 +264,14 @@ const Table = ({ data, currentDBInteracting }) => {
                   <button
                     className="btn btn-primary m-1"
                     onClick={handleAddRow}
-                    disabled={editRow != null || addLoading || deleteLoading || updateLoading}
+                    disabled={
+                      editRow != null ||
+                      addLoading ||
+                      deleteLoading ||
+                      updateLoading
+                    }
                   >
-                    {addLoading ? <SmallSpinner/> : "Insert"}
+                    {addLoading ? <SmallSpinner /> : "Insert"}
                   </button>
                 </td>
               </tr>

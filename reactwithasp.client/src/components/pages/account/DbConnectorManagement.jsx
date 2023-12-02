@@ -14,45 +14,7 @@ import { externalDbService } from "../../../services/externalDbService";
 /* TODOS:
     Create back button to go t previous view
     Create a reset button that will essentially refresh the page, dump all data and restart
-    need module here for deleting cs...
 */
-
-const tableSummary = [
-  { tableName: "test1", rowsInTable: 22 },
-  { tableName: "test2", rowsInTable: 2 },
-  { tableName: "test3", rowsInTable: 44 },
-  { tableName: "test4", rowsInTable: 63 },
-];
-
-const tableTestData = [
-  {
-    id: 1,
-    name: "John Doe",
-    address: "123 Main St, Cityville",
-    age: 25,
-    moneyInBank: 5000,
-    gender: "Male",
-    favoriteFood: "Pizza",
-  },
-  {
-    id: 2,
-    name: "Jane Doe",
-    address: "456 Oak St, Townsville",
-    age: 30,
-    moneyInBank: 8000,
-    gender: "Female",
-    favoriteFood: "Sushi",
-  },
-  {
-    id: 3,
-    name: "Bob Smith",
-    address: "789 Pine St, Villagetown",
-    age: 22,
-    moneyInBank: 3000,
-    gender: "Male",
-    favoriteFood: "Burger",
-  },
-];
 
 const ConnectionStringManagementPage = () => {
   const navigate = useNavigate();
@@ -96,14 +58,6 @@ const ConnectionStringManagementPage = () => {
           );
         });
     }, 1000);
-
-    // once data is loaded - set loading state to false, currentdisplay for tables to true and screen message to null
-    // setTimeout(() => {
-    //   setLoadedTablesFromDB(tableSummary);
-    //   setScreenMessage(null);
-    //   setcurrentDataDisplay({ ...currentDataDisplay, tables: true, db: false });
-    //   setLoadingState(false);
-    // }, 1000);
   }
 
   function switchToTableDataView(data) {

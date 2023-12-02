@@ -4,41 +4,45 @@ import SmallSpinner from "../../loading/SmallSpinner";
 import { dbCSService } from "../../../services/dbCSService";
 import { alertService } from "../../../services/alertService";
 
-const Table = ({ data, switchView }) => {
+const Table = ({ data = [], switchView }) => {
   const [tableData, setTableData] = useState(data);
   const [modalOpen, setModalOpen] = useState(false);
   const [toDelete, setToDelete] = useState(null);
-  const [deleting, setDeleting] = useState(null);
-
-  // TODOs will be sections that will connect with api connection of database.
-
+  // Access for database contents takes place in parent initialized
+  // buy switchView method
   const accessDatabaseContents = (index) => {
-    // TODO - Connect database update action here
-    // console.log("Access Database...", tableData[index]);
     switchView(tableData[index]);
   };
 
   const handleDelete = async (index) => {
-    // setInterval( async () => {
+    setTimeout(async () => {
       await dbCSService
-      .delete(tableData[index].id)
-      .then((result) => {
-        alertService.success(
-          `Information associated with ${tableData[index].dbName} has been deleted.`
-        );
-        const updatedData = [...tableData];
-        updatedData.splice(index, 1);
-        setTableData(updatedData);
-        setDeleting(null);
-      })
-      .catch((error) => {
-        alertService.error(
-          "Cannot delete connection information at this time."
-        );
-        setDeleting(null);
-      });
-    // }, 5000);
+        .delete(tableData[index].id)
+        .then((result) => {
+          alertService.success(
+            `Information associated with ${tableData[index].dbName} has been deleted.`
+          );
+          const updatedData = [...tableData];
+          updatedData.splice(index, 1);
+          setTableData(updatedData);
+          setToDelete(null);
+        })
+        .catch((error) => {
+          alertService.error(
+            "Cannot delete connection information at this time."
+          );
+          setToDelete(null);
+        });
+    }, 1000);
   };
+
+  if (tableData.length === 0) {
+    return (
+      <>
+        <h4 className="text-center w-100 mt-5">Nothing to see here...</h4>
+      </>
+    );
+  }
 
   const numberOfNeededCols = Object.keys(data[0]).length + 1;
   let percentage = 100 / numberOfNeededCols;
@@ -56,8 +60,6 @@ const Table = ({ data, switchView }) => {
         btnAction={() => {
           handleDelete(toDelete);
           setModalOpen(false);
-          setToDelete(null);
-          setDeleting(toDelete);
         }}
       ></Modal>
       <div className="d-flex justify-content-center flex-column">
@@ -78,7 +80,10 @@ const Table = ({ data, switchView }) => {
                     {key}
                   </th>
                 ))}
-                <th className="text-center pt-3 pb-3">
+                <th
+                  className="text-center pt-3 pb-3"
+                  style={{ width: `${percentage}%`, minWidth: "100px" }}
+                >
                   Database Connection Actions
                 </th>
               </tr>
@@ -104,18 +109,15 @@ const Table = ({ data, switchView }) => {
                         setModalOpen(true);
                         setToDelete(index);
                       }}
-                      disabled={deleting === index}
+                      disabled={toDelete === index}
                     >
-                      {deleting === index ? <SmallSpinner /> : "Delete"}
+                      {toDelete === index ? <SmallSpinner /> : "Delete"}
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <h4 className="text-center w-100">
-            {tableData.length === 0 ? "Nothing to see here..." : ""}
-          </h4>
         </div>
       </div>
     </>
