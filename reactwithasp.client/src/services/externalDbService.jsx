@@ -22,13 +22,13 @@ async function updateTableInteracting(tableName, dbId) {
 }
 
 async function deleteTable(dbId, tableName) {
- // return await fetchWrapper.delete(`external/table/${dbId}/${tableName}`);
+   return await fetchWrapper.delete(`external/table/${dbId}/${tableName}`);
 }
 
 // end-page is limit in sql
 async function getDataFromTable(dbId, startPage, endPage) {
   return await fetchWrapper.get(
-    `external/data/${dbId}?pagestart=${startPage}&pageend=${endPage}`
+   `external/data/${dbId}?pagestart=${startPage}&pageend=${endPage}`
   );
 }
 
@@ -51,7 +51,6 @@ async function updateRow(dbId, oldRowData, newRowData) {
     // Assign the value to the updated key in the new object
     updatedObject[updatedKey] = oldRowData[key];
   }
-  console.log(newRowData, oldRowData)
  return await fetchWrapper.put(`external/data/${dbId}/update`, { oldData: updatedObject, newData: convertStringsToNumbers(newRowData) });
 }
 

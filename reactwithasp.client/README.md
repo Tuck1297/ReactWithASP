@@ -31,10 +31,6 @@ Still need pages for the following account api routes
 3. watch cloud native video tomorrow (MUST DO!!!)
 4. work with ChatGPT AI API before december end of day december 2nd...
 
-5. Fix querying problem with datetime for delete add and update
-6. Fix tablename formatting when being sent problem
-7. Add left and right arrow keys to look through pages of data
-8. see if I can update query (select) to order by particular column
 
 ## Notes
 - This project currently assumes that the accessed postgresql database is under the public schema
@@ -42,3 +38,15 @@ Still need pages for the following account api routes
 - This project currently only works with postgresql databases
 - This project can easily integrate other databases which was the intention of the project
 - This project deletes tables from schemas but does not delete schemas from a database
+
+## Directions to set up project
+1. Fork Repository
+Download Nuget packages
+2. use PGAdmin and create following databases HackathonDB, SupplyChain, WebsiteInfo
+3. Migrate test data to databases created with PGAdmin
+4. update connection strings in appsettings.json with infomration to created databases
+5. migrate data
+NOTE: also point out which areas one could change to get this to work with sql server
+6. Can either register for user and add own connection string data on form OR use first test 
+7. user account created in DataContext to access test databases
+8. talk about features of implementation and current limitations

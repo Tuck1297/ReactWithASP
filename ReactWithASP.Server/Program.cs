@@ -35,7 +35,6 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 // Add db context
-
 var dbConnection = builder.Configuration.GetConnectionString("DbString");
 var dbConnection2 = builder.Configuration.GetConnectionString("SupplyChainConnection");
 var dbConnection3 = builder.Configuration.GetConnectionString("WebsiteInfoConnection");
@@ -71,33 +70,12 @@ builder.Services.AddAuthentication().AddCookie("default", o =>
     //o.Cookie.Domain = "";
     o.Cookie.Path = "/";
     o.Cookie.HttpOnly = true;
-    //o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    //o.Cookie.SameSite = SameSiteMode.Lax;
+    o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    o.Cookie.SameSite = SameSiteMode.Lax;
     o.ExpireTimeSpan = TimeSpan.FromMinutes(15);
     o.SlidingExpiration = true;
 
 });
-/*
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(o =>
-{
-    o.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey
-    (Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = false,
-        ValidateIssuerSigningKey = true
-    };
-});
-*/
 
 builder.Services.AddAuthorization(builder =>
 {
@@ -160,21 +138,6 @@ app.MapControllerRoute(name: "cs", pattern: "/cs/*");
 app.MapControllerRoute(name: "user", pattern: "/user/*");
 app.MapControllerRoute(name: "external", pattern: "/external/*");
 
-/*app.Use(async (context, next) =>
-{
-    var url = context.Request.Path.Value;
-
-    // Rewrite to index
-    if (url.Contains("/account/login"))
-    {
-        // rewrite and continue processing
-        context.Response.Redirect("https://localhost:5173/account/login");
-        return;
-    }
-
-    await next();
-});
-*/
 app.MapFallbackToFile("/index.html");
 
 app.Run();

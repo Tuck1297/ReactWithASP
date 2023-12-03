@@ -16,7 +16,7 @@ namespace ReactWithASP.Server.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            var inventory_items = JsonConvert.DeserializeObject<List<Inventory>>(File.ReadAllText("InventoryTestData.json"));
+            var inventory_items = JsonConvert.DeserializeObject<List<Inventory>>(File.ReadAllText("TestData/InventoryTestData.json"));
 
             foreach (var element in inventory_items)
             {
@@ -32,7 +32,7 @@ namespace ReactWithASP.Server.Data
 
             modelBuilder.Entity<Inventory>().HasData(inventory_items);
 
-            var product_items = JsonConvert.DeserializeObject<List<Products>>(File.ReadAllText("ProductsTestData.json"));
+            var product_items = JsonConvert.DeserializeObject<List<Products>>(File.ReadAllText("TestData/ProductsTestData.json"));
 
             foreach (var element in product_items)
             {

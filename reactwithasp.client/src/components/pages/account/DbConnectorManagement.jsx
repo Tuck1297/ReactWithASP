@@ -1,4 +1,4 @@
-import ObjectTable from "../../forms/tables/DbDataTable";
+import DbDataTable from "../../forms/tables/DbDataTable";
 import DbConnectionsSummaryTable from "../../forms/tables/DbConnectionsSummaryTable";
 import DbTableSummary from "../../forms/tables/DbTableSummary";
 import LargeSpinner from "../../loading/LargeSpinner";
@@ -11,11 +11,11 @@ import CenterElement from "../../bootstrap/CenterElement";
 import { dbCSService } from "../../../services/dbCSService";
 import { externalDbService } from "../../../services/externalDbService";
 
-/* TODOS:
-    Create a reset button that will essentially refresh the page, dump all data and restart
-*/
+// TODOS: fix logic in next button going too far (can do this with table size retrieved)
+//        add loading animations to page and style the buttons top and bottom
+//        (be sure the next and prev buttons dont show on any other table page)
 
-const ConnectionStringManagementPage = () => {
+const DatabaseManagementPage = () => {
   const navigate = useNavigate();
   const { signedIn, setSignedIn } = useContext(UserAuthContext);
   const [loading, setLoadingState] = useState(true);
@@ -29,8 +29,12 @@ const ConnectionStringManagementPage = () => {
   );
   const [loadedDBs, setLoadedDBs] = useState(null);
   const [loadedTablesFromDB, setLoadedTablesFromDB] = useState(null);
-  const [loadedDataFromTable, setLoadedDataFromTable] = useState(null);
+  const [loadedDataFromTable, setLoadedDataFromTable] = useState([]);
   const [currentDBInteracting, setCurrentDBInteracting] = useState(null);
+  const [currentTableInteracting, setCurrentTableInteracting] = useState(null);
+  const [pageStartIndex, setPageStartIndex] = useState(0); // page is determined by (pageStartIndex, to either pageStartIndex * 25 (if pageStartIndex is not 0) or 25)
+  const [newPageLoading, setNewPageLoading] = useState(false);
+  const [toDisplayRows, setToDisplayRows] = useState(null);
 
   function switchToTablesView(data) {
     setLoadingState(true);
@@ -60,8 +64,8 @@ const ConnectionStringManagementPage = () => {
   }
 
   function switchToTableDataView(data) {
-    console.log(data);
     setLoadingState(true);
+    setCurrentTableInteracting(data);
     setcurrentDataDisplay({ ...currentDataDisplay, tables: false });
     setScreenMessage("Loading data for selected database table.");
 
@@ -69,7 +73,6 @@ const ConnectionStringManagementPage = () => {
       await externalDbService
         .updateTableInteracting(data.tableName, currentDBInteracting)
         .then((result) => {
-          console.log("table interacting", result);
           return externalDbService.getDataFromTable(
             currentDBInteracting,
             0,
@@ -104,7 +107,7 @@ const ConnectionStringManagementPage = () => {
           setLoadedDBs(result);
           setLoadingState(false);
           setScreenMessage(null);
-          setcurrentDataDisplay({...currentDataDisplay, db: true});
+          setcurrentDataDisplay({ ...currentDataDisplay, db: true });
         })
         .catch(() => {
           setScreenMessage(
@@ -158,6 +161,7 @@ const ConnectionStringManagementPage = () => {
     setLoadedTablesFromDB(null);
     setLoadedDataFromTable(null);
     setCurrentDBInteracting(null);
+    setToDisplayRows(null);
     setLoadedDBs(null);
     setScreenMessage("Restarting and grabbing some Mt. Dew...");
     setLoadingState(true);
@@ -191,10 +195,7 @@ const ConnectionStringManagementPage = () => {
               >
                 Back
               </button>
-              <button
-                onClick={resetView}
-                className="btn btn-secondary mt-2"
-              >
+              <button onClick={resetView} className="btn btn-secondary mt-2">
                 Reset
               </button>
             </CenterElement>
@@ -217,10 +218,14 @@ const ConnectionStringManagementPage = () => {
               ""
             )}
             {currentDataDisplay.table_data ? (
-              <ObjectTable
-                data={loadedDataFromTable}
-                currentDBInteracting={currentDBInteracting}
-              />
+              <>
+                <DbDataTable
+                  data={loadedDataFromTable}
+                  currentDBInteracting={currentDBInteracting}
+                  newPageLoading={newPageLoading}
+                  currentTableInteracting={currentTableInteracting}
+                />
+              </>
             ) : (
               ""
             )}
@@ -232,4 +237,4 @@ const ConnectionStringManagementPage = () => {
   );
 };
 
-export default ConnectionStringManagementPage;
+export default DatabaseManagementPage;

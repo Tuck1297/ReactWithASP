@@ -19,15 +19,15 @@ namespace ReactWithASP.Server.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         { 
-            var analytics_items = JsonConvert.DeserializeObject<List<WebAnalytics>>(File.ReadAllText("WebAnalyticsTestData.json"));
+            var analytics_items = JsonConvert.DeserializeObject<List<WebAnalytics>>(File.ReadAllText("TestData/WebAnalyticsTestData.json"));
 
             modelBuilder.Entity<WebAnalytics>().HasData(analytics_items);
 
-            var info_items = JsonConvert.DeserializeObject<List<WebsiteInfo>>(File.ReadAllText("WebsiteInfoTestData.json"));
+            var info_items = JsonConvert.DeserializeObject<List<WebsiteInfo>>(File.ReadAllText("TestData/WebsiteInfoTestData.json"));
 
             modelBuilder.Entity<WebsiteInfo>().HasData(info_items);
 
-            var site1_items = JsonConvert.DeserializeObject<List<Website1Users>>(File.ReadAllText("Website1UsersTestData.json"));
+            var site1_items = JsonConvert.DeserializeObject<List<Website1Users>>(File.ReadAllText("TestData/Website1UsersTestData.json"));
 
             modelBuilder.Entity<Website1Users>().HasData(site1_items);
 
